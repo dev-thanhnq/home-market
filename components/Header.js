@@ -115,7 +115,7 @@ class Header extends React.Component {
         style={styles.search}
         placeholder="Nhập thông tin cần tìm kiếm"
         placeholderTextColor={'#8898AA'}
-        onFocus={() => {Keyboard.dismiss(); navigation.navigate('Pro')}}
+        // onFocus={() => {Keyboard.dismiss(); navigation.navigate('Pro')}}
         iconContent={
           <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra" />
         }
@@ -182,9 +182,9 @@ class Header extends React.Component {
     if (search || tabs || options) {
       return (
         <Block center>
-          {search ? this.renderSearch() : null}
+          {/*{search ? this.renderSearch() : null}*/}
           {/*{options ? this.renderOptions() : null}*/}
-          {tabs ? this.renderTabs() : null}
+          {/*{tabs ? this.renderTabs() : null}*/}
         </Block>
       );
     }

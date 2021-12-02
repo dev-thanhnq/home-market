@@ -7,6 +7,11 @@ import { Block, Text, theme } from 'galio-framework';
 import { nowTheme } from '../constants';
 
 class Card extends React.Component {
+
+  cutTitle(str, n) {
+    return (str.length > n) ? str.substr(0, n - 1) + '...' : str;
+  }
+
   render() {
     const {
       navigation,
@@ -33,7 +38,7 @@ class Card extends React.Component {
       <Block row={horizontal} card flex style={cardContainer}>
         <TouchableWithoutFeedback onPress={() => navigation.navigate('Pro')}>
           <Block flex style={imgContainer}>
-            <Image resizeMode="cover" source={item.images[0]} style={imageStyles} />
+            <Image resizeMode="cover" source={{uri: item.images[0]}} style={imageStyles} />
           </Block>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => navigation.navigate('Pro')}>
@@ -45,7 +50,7 @@ class Card extends React.Component {
                 style={titleStyles}
                 color={nowTheme.COLORS.SECONDARY}
               >
-                {item.title}
+                {this.cutTitle(item.title, 40)}
               </Text>
               {item.subtitle ? (
                 <Block flex center>
