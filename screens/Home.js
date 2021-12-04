@@ -16,7 +16,9 @@ class Home extends React.Component {
   state = {
     homeData: [],
     page: '1',
-    search: ""
+    search: "",
+    toilet: "",
+    bedroom: ""
   }
 
   async componentDidMount() {
@@ -28,13 +30,17 @@ class Home extends React.Component {
           method: 'GET',
           redirect: 'follow'
       };
-      fetch("http://47.254.253.64:5000/api/posts?page=" + this.state.page + "&filter=address:" + this.state.search, requestOptions)
+      fetch("http://47.254.253.64:5000/api/posts?page="
+      + this.state.page + "&filter=address:"
+      + this.state.search
+      + (this.state.toilet ? ",toilet:" + this.state.toilet : "")
+      + (this.state.bedroom ? ",bedroom:" + this.state.bedroom : ""), requestOptions)
           .then(response => response.json())
           .then(result => {
               this.setState({
                   homeData: result["posts"]
               })
-              console.log('__________________________________')
+              console.log('__________________________________1')
           })
           .catch(error => console.log('error', error));
   }
@@ -181,6 +187,36 @@ class Home extends React.Component {
                         </Button>
                     </Block>
                 </Block>
+                <Block row left>
+                    <Block row>
+                        <Input
+                            right
+                            color="black"
+                            style={styles.filterSearch}
+                            placeholder="Toilet"
+                            placeholderTextColor={'#8898AA'}
+                            iconContent={
+                                <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra" />
+                            }
+                            value={this.state.toilet}
+                            onChangeText={(toilet) => this.setState({toilet})}
+                        />
+                    </Block>
+                    <Block row>
+                        <Input
+                            right
+                            color="black"
+                            style={styles.filterSearch}
+                            placeholder="Phòng ngủ"
+                            placeholderTextColor={'#8898AA'}
+                            iconContent={
+                                <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra" />
+                            }
+                            value={this.state.bedroom}
+                            onChangeText={(bedroom) => this.setState({bedroom})}
+                        />
+                    </Block>
+                </Block>
             </Block>
         );
     };
@@ -284,7 +320,15 @@ const styles = StyleSheet.create({
         height: 48,
         flex: -1,
         borderRadius: 30,
-    }
+    },
+    filterSearch: {
+        height: 40,
+        width: width - 240,
+        marginHorizontal: 10,
+        borderWidth: 1,
+        borderRadius: 30,
+        borderColor: nowTheme.COLORS.BORDER
+    },
 });
 
 export default Home;
