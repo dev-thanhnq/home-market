@@ -187,36 +187,36 @@ class Home extends React.Component {
                         </Button>
                     </Block>
                 </Block>
-                <Block row left>
-                    <Block row>
-                        <Input
-                            right
-                            color="black"
-                            style={styles.filterSearch}
-                            placeholder="Toilet"
-                            placeholderTextColor={'#8898AA'}
-                            iconContent={
-                                <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra" />
-                            }
-                            value={this.state.toilet}
-                            onChangeText={(toilet) => this.setState({toilet})}
-                        />
-                    </Block>
-                    <Block row>
-                        <Input
-                            right
-                            color="black"
-                            style={styles.filterSearch}
-                            placeholder="Phòng ngủ"
-                            placeholderTextColor={'#8898AA'}
-                            iconContent={
-                                <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra" />
-                            }
-                            value={this.state.bedroom}
-                            onChangeText={(bedroom) => this.setState({bedroom})}
-                        />
-                    </Block>
-                </Block>
+                {/*<Block row left>*/}
+                {/*    <Block row>*/}
+                {/*        <Input*/}
+                {/*            right*/}
+                {/*            color="black"*/}
+                {/*            style={styles.filterSearch}*/}
+                {/*            placeholder="Toilet"*/}
+                {/*            placeholderTextColor={'#8898AA'}*/}
+                {/*            iconContent={*/}
+                {/*                <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra" />*/}
+                {/*            }*/}
+                {/*            value={this.state.toilet}*/}
+                {/*            onChangeText={(toilet) => this.setState({toilet})}*/}
+                {/*        />*/}
+                {/*    </Block>*/}
+                {/*    <Block row>*/}
+                {/*        <Input*/}
+                {/*            right*/}
+                {/*            color="black"*/}
+                {/*            style={styles.filterSearch}*/}
+                {/*            placeholder="Phòng ngủ"*/}
+                {/*            placeholderTextColor={'#8898AA'}*/}
+                {/*            iconContent={*/}
+                {/*                <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra" />*/}
+                {/*            }*/}
+                {/*            value={this.state.bedroom}*/}
+                {/*            onChangeText={(bedroom) => this.setState({bedroom})}*/}
+                {/*        />*/}
+                {/*    </Block>*/}
+                {/*</Block>*/}
             </Block>
         );
     };
