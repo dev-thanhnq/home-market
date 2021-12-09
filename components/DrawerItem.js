@@ -10,7 +10,7 @@ class DrawerItem extends React.Component {
     const { title, focused } = this.props;
 
     switch (title) {
-      case "Home":
+      case "Trang chủ":
         return (
           <Icon
             name="app2x"
@@ -20,7 +20,7 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
-      case "Components":
+      case "Theo dõi":
         return (
           <Icon
             name="atom2x"
@@ -40,7 +40,7 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
-      case "Profile":
+      case "Bài của tôi":
         return (
           <Icon
             name="profile-circle"
@@ -50,10 +50,10 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
-      case "Account":
+      case "Tài khoản":
         return (
           <Icon
-            name="badge2x"
+            name="profile-circle"
             family="NowExtra"
             size={18}
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}

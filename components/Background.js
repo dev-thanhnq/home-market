@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
   },
   container: {
-    flex: 1,
+    marginTop: '50%',
+    // flex: 1,
     padding: 20,
     width: '100%',
     maxWidth: 340,

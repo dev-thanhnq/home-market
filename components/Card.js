@@ -36,12 +36,12 @@ class Card extends React.Component {
 
     return (
       <Block row={horizontal} card flex style={cardContainer}>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Pro')}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Login')}>
           <Block flex style={imgContainer}>
             <Image resizeMode="cover" source={{uri: item.images[0]}} style={imageStyles} />
           </Block>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Pro')}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Login')}>
           <Block flex space="between" style={styles.cardDescription}>
             <Block flex>
               <Text
@@ -99,6 +99,7 @@ class Card extends React.Component {
                 muted={!ctaColor}
                 color={ctaColor || nowTheme.COLORS.ACTIVE}
                 bold
+                onPress={() => navigation.navigate('Login')}
               >
                 Xem chi tiết
               </Text>

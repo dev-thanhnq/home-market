@@ -8,7 +8,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from '../screens/Home';
 import Pro from '../screens/Pro';
 import Profile from '../screens/Profile';
-import Register from '../screens/Register';
 import Components from '../screens/Components';
 import Articles from '../screens/Articles';
 import Onboarding from '../screens/Onboarding';
@@ -18,6 +17,7 @@ import CustomDrawerContent from "./Menu";
 // header for screens
 import { Header, Icon} from '../components';
 import { nowTheme, tabs } from "../constants";
+import Login from "../screens/Login";
 
 const { width } = Dimensions.get("screen");
 
@@ -28,7 +28,7 @@ function ComponentsStack(props) {
   return (
     <Stack.Navigator initialRouteName="Components" mode="card" headerMode="screen">
       <Stack.Screen name="Components" component={Components} options={{
-        header:({ navigation, scene }) => (<Header title="Components" navigation={navigation} scene={scene} />),
+        header:({ navigation, scene }) => (<Header title="Theo dõi" navigation={navigation} scene={scene} />),
         backgroundColor: "#FFFFFF"
       }}/>
     </Stack.Navigator>
@@ -46,17 +46,17 @@ function ArticlesStack(props) {
   );
 }
 
-function AccountStack(props) {
+function LoginStack(props) {
   return (
-    <Stack.Navigator initialRouteName="Account" mode="card" headerMode="screen">
+    <Stack.Navigator initialRouteName="Login" mode="card" headerMode="screen">
       <Stack.Screen
-        name="Account"
-        component={Register}
+        name="Login"
+        component={Login}
         options={{
           header: ({ navigation, scene }) => (
             <Header 
               transparent
-              title="Create Account"
+              title="Đăng nhập"
               navigation={navigation}
               scene={scene}
             />
@@ -78,30 +78,12 @@ function ProfileStack(props) {
           header: ({ navigation, scene }) => (
             <Header
               transparent
-              white
-              title="Profile"
+              title="Bài của tôi"
               navigation={navigation}
               scene={scene}
             />
           ),
           cardStyle: { backgroundColor: "#FFFFFF" },
-          headerTransparent: true
-        }}
-      />
-      <Stack.Screen
-        name="Pro"
-        component={Pro}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              title=""
-              back
-              white
-              transparent
-              navigation={navigation}
-              scene={scene}
-            />
-          ),
           headerTransparent: true
         }}
       />
@@ -118,7 +100,7 @@ function HomeStack(props) {
         options={{
           header: ({ navigation, scene }) => (
             <Header
-              title="Home"
+              title="Trang chủ"
               search
               options
               navigation={navigation}
@@ -178,13 +160,12 @@ function AppStack(props) {
           fontWeight: "normal"
         }
       }}
-      initialRouteName="Home"
+      initialRouteName="Trang chủ"
     >
-      <Drawer.Screen name="Home" component={HomeStack} />
-      <Drawer.Screen name="Components" component={ComponentsStack} />
-      <Drawer.Screen name="Articles" component={ArticlesStack} />
-      <Drawer.Screen name="Profile" component={ProfileStack} />
-      <Drawer.Screen name="Account" component={AccountStack} />
+      <Drawer.Screen name="Trang chủ" component={HomeStack} />
+      <Drawer.Screen name="Theo dõi" component={ComponentsStack} />
+      <Drawer.Screen name="Bài của tôi" component={ProfileStack} />
+      <Drawer.Screen name="Tài khoản" component={LoginStack} />
     </Drawer.Navigator>
   );
 }
@@ -192,13 +173,6 @@ function AppStack(props) {
 export default function OnboardingStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="none">
-      <Stack.Screen
-        name="Onboarding"
-        component={Onboarding}
-        option={{
-          headerTransparent: true
-        }}
-      />
       <Stack.Screen name="App" component={AppStack} />
     </Stack.Navigator>
   );

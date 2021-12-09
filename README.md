@@ -131,7 +131,7 @@ now-ui-react-native/
     ├── Onboarding.js
     ├── Pro.js
     ├── Profile.js
-    ├── Register.js
+    ├── Login.js
     └── Settings.js
 ```
 

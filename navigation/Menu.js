@@ -26,11 +26,10 @@ function CustomDrawerContent({
 }) {
   const insets = useSafeArea();
   const screens = [
-    "Home",
-    "Components",
-    "Articles",
-    "Profile",
-    "Account",
+    "Trang chủ",
+    "Theo dõi",
+    "Bài của tôi",
+    "Tài khoản",
   ];
   return (
     <Block
