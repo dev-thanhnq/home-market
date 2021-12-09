@@ -9,7 +9,7 @@ import {
   ImageBackground
 } from 'react-native';
 
-import Articles from '../screens/Articles';
+import Articles from './Articles';
 // Galio components
 import { Block, Text, Button as GaButton, theme } from 'galio-framework';
 

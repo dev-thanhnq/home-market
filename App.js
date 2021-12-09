@@ -6,8 +6,8 @@ import { Asset } from 'expo-asset';
 import { Block, GalioProvider } from 'galio-framework';
 import { NavigationContainer } from '@react-navigation/native';
 
-import Screens from './navigation/Screens';
-import { Images, articles, nowTheme } from './constants';
+import Screens from './src/navigation/Screens';
+import { Images, articles, nowTheme } from './src/constants';
 
 // cache app images
 const assetImages = [

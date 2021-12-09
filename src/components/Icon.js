@@ -3,8 +3,8 @@ import * as Font from 'expo-font';
 import { createIconSetFromIcoMoon } from '@expo/vector-icons';
 import { Icon } from 'galio-framework';
 
-import nowConfig from '../assets/config/now.json';
-const NowExtra = require('../assets/font/now.ttf');
+import nowConfig from '../../assets/config/now.json';
+const NowExtra = require('../../assets/font/now.ttf');
 const IconNowExtra = createIconSetFromIcoMoon(nowConfig, 'NowExtra');
 
 class IconExtra extends React.Component {
