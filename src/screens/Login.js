@@ -8,7 +8,7 @@ import Button from '../components/Button'
 import TextInput from '../components/TextInput'
 import BackButton from '../components/BackButton'
 import { theme } from '../core/theme'
-import { emailValidator } from '../helpers/emailValidator'
+import { userValidator } from '../helpers/userValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 
 export default function LoginScreen({ navigation }) {
@@ -17,7 +17,7 @@ export default function LoginScreen({ navigation }) {
     const [error, setError] = useState({ value: false})
 
   const onLoginPressed = () => {
-    const usernameError = emailValidator(username.value)
+    const usernameError = userValidator(username.value)
     const passwordError = passwordValidator(password.value)
 
     if (usernameError || passwordError) {
@@ -100,7 +100,7 @@ export default function LoginScreen({ navigation }) {
         </Button>
         <View style={styles.row}>
           <Text>Bạn chưa có tài khoản? </Text>
-          <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={styles.link}>Đăng ký</Text>
           </TouchableOpacity>
         </View>

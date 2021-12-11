@@ -12,12 +12,13 @@ import Components from '../screens/Components';
 import Articles from '../screens/Articles';
 import Onboarding from '../screens/Onboarding';
 import SettingsScreen from '../screens/Settings';
+import Login from "../screens/Login";
+import Register from "../screens/Register";
 // drawer
 import CustomDrawerContent from "./Menu";
 // header for screens
 import { Header, Icon} from '../components';
 import { nowTheme, tabs } from "../constants";
-import Login from "../screens/Login";
 
 const { width } = Dimensions.get("screen");
 
@@ -66,6 +67,28 @@ function LoginStack(props) {
       />
     </Stack.Navigator>
   );
+}
+
+function RegisterStack(props) {
+    return (
+        <Stack.Navigator initialRouteName="Register" mode="card" headerMode="screen">
+            <Stack.Screen
+                name="Register"
+                component={Register}
+                options={{
+                    header: ({ navigation, scene }) => (
+                        <Header
+                            transparent
+                            title="Đăng ký"
+                            navigation={navigation}
+                            scene={scene}
+                        />
+                    ),
+                    headerTransparent: true
+                }}
+            />
+        </Stack.Navigator>
+    );
 }
 
 function ProfileStack(props) {
@@ -166,6 +189,7 @@ function AppStack(props) {
       <Drawer.Screen name="Theo dõi" component={ComponentsStack} />
       <Drawer.Screen name="Bài của tôi" component={ProfileStack} />
       <Drawer.Screen name="Tài khoản" component={LoginStack} />
+      <Drawer.Screen name="Đăng ký" component={RegisterStack} />
     </Drawer.Navigator>
   );
 }

@@ -30,6 +30,7 @@ function CustomDrawerContent({
     "Theo dõi",
     "Bài của tôi",
     "Tài khoản",
+      "Đăng ký"
   ];
   return (
     <Block
@@ -63,15 +64,8 @@ function CustomDrawerContent({
           <Block
             style={{ borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10}}
           />
-          <Text
-            color={nowTheme.COLORS.WHITE}
-            style={{ marginTop: 30, marginLeft: 20, marginBottom: 10, fontFamily: 'montserrat-regular', fontWeight: '300', fontSize: 12}}
-          >
-            DOCUMENTATION
-          </Text>
         </Block>
-        <DrawerCustomItem title="GETTING STARTED" navigation={navigation}/>
-        <DrawerCustomItem title="LOGOUT" navigation={navigation}/>
+        <DrawerCustomItem title="Đăng xuất" navigation={navigation}/>
         </ScrollView>
       </Block>
     </Block>
