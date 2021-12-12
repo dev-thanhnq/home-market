@@ -12,46 +12,34 @@ import { userValidator } from '../helpers/userValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { emailValidator } from "../helpers/emailValidator";
 
-export default function Register({ navigation }) {
-    const [username, setUsername] = useState({ value: '', error: '' })
-    const [password, setPassword] = useState({ value: '', error: '' })
+export default function ForgotPassword({ navigation }) {
     const [email, setEmail] = useState({ value: '', error: '' })
     const [error, setError] = useState({ value: false})
 
     const onLoginPressed = () => {
-        const usernameError = userValidator(username.value)
-        const passwordError = passwordValidator(password.value)
+        const emailError = emailValidator(email.value)
 
-        if (usernameError || passwordError) {
-            setUsername({ ...username, error: usernameError })
-            setPassword({ ...password, error: passwordError })
+        if (emailError) {
+            setEmail({ ...email, error: emailError })
             return
         }
-        // navigation.reset({
-        //   index: 0,
-        //   routes: [{ name: 'Dashboard' }],
-        // })
 
         let formdata = new FormData();
-        formdata.append("username", username.value)
-        formdata.append("password", password.value)
         formdata.append("email", email.value)
         var requestOptions = {
             method: 'POST',
             redirect: 'follow',
             body: formdata
         };
-        fetch("http://47.254.253.64:5000/api/auth/signup", requestOptions)
+        fetch("http://47.254.253.64:5000/api/auth/forgot", requestOptions)
             .then(response => response.json())
             .then(result => {
                 if (result.error) {
                     setError({ value: true });
                 } else {
-                    setUsername({value: ''});
-                    setPassword({value: ''});
                     setEmail({value: ''})
                     setError({ value: false });
-                    navigation.navigate('Home')
+                    navigation.navigate('Login')
                 }
             })
             .catch(error =>  {
@@ -70,28 +58,18 @@ export default function Register({ navigation }) {
                 )
             }
             <TextInput
-                label="Tài khoản"
+                label="Email"
                 returnKeyType="next"
-                value={username.value}
-                onChangeText={(text) => setUsername({ value: text, error: '' })}
-                error={!!username.error}
-                errorText={username.error}
+                value={email.value}
+                onChangeText={(text) => setEmail({ value: text, error: '' })}
+                error={!!email.error}
+                errorText={email.error}
                 autoCapitalize="none"
             />
-            <TextInput
-                label="Mật khẩu"
-                returnKeyType="done"
-                value={password.value}
-                onChangeText={(text) => setPassword({ value: text, error: '' })}
-                error={!!password.error}
-                errorText={password.error}
-                secureTextEntry
-            />
             <Button mode="contained" onPress={onLoginPressed}>
-                Đăng ký
+                Gửi email
             </Button>
             <View style={styles.row}>
-                <Text>Bạn đã có tài khoản? </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                     <Text style={styles.link}>Đăng nhập</Text>
                 </TouchableOpacity>

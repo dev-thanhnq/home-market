@@ -19,6 +19,7 @@ import CustomDrawerContent from "./Menu";
 // header for screens
 import { Header, Icon} from '../components';
 import { nowTheme, tabs } from "../constants";
+import ForgotPassword from "../screens/ForgotPassword";
 
 const { width } = Dimensions.get("screen");
 
@@ -65,6 +66,36 @@ function LoginStack(props) {
           headerTransparent: true
         }}
       />
+        <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{
+                header: ({ navigation, scene }) => (
+                    <Header
+                        transparent
+                        title="Đăng ký"
+                        navigation={navigation}
+                        scene={scene}
+                    />
+                ),
+                headerTransparent: true
+            }}
+        />
+        <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPassword}
+            options={{
+                header: ({ navigation, scene }) => (
+                    <Header
+                        transparent
+                        title="Quên mật khẩu"
+                        navigation={navigation}
+                        scene={scene}
+                    />
+                ),
+                headerTransparent: true
+            }}
+        />
     </Stack.Navigator>
   );
 }
@@ -72,21 +103,7 @@ function LoginStack(props) {
 function RegisterStack(props) {
     return (
         <Stack.Navigator initialRouteName="Register" mode="card" headerMode="screen">
-            <Stack.Screen
-                name="Register"
-                component={Register}
-                options={{
-                    header: ({ navigation, scene }) => (
-                        <Header
-                            transparent
-                            title="Đăng ký"
-                            navigation={navigation}
-                            scene={scene}
-                        />
-                    ),
-                    headerTransparent: true
-                }}
-            />
+
         </Stack.Navigator>
     );
 }
@@ -189,7 +206,7 @@ function AppStack(props) {
       <Drawer.Screen name="Theo dõi" component={ComponentsStack} />
       <Drawer.Screen name="Bài của tôi" component={ProfileStack} />
       <Drawer.Screen name="Tài khoản" component={LoginStack} />
-      <Drawer.Screen name="Đăng ký" component={RegisterStack} />
+      {/*<Drawer.Screen name="Đăng ký" component={RegisterStack} />*/}
     </Drawer.Navigator>
   );
 }

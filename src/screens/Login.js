@@ -59,10 +59,6 @@ export default function LoginScreen({ navigation }) {
 
   return (
       <Background>
-        {/*<BackButton goBack={navigation.goBack} />*/}
-        {/*<Logo />*/}
-        {/* <Header>Welcome back.</Header>*/}
-
           {
               (error.value) ? (
                       <Text style={styles.loginError}>Tài khoản hoặc mật khẩu không chính xác</Text>
@@ -90,7 +86,7 @@ export default function LoginScreen({ navigation }) {
         />
         <View style={styles.forgotPassword}>
           <TouchableOpacity
-              onPress={() => navigation.navigate('ResetPasswordScreen')}
+              onPress={() => navigation.navigate('ForgotPassword')}
           >
             <Text style={styles.forgot}>Quên mật khẩu?</Text>
           </TouchableOpacity>
