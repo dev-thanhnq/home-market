@@ -62,7 +62,7 @@ function CustomDrawerContent({
             style={{ borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10}}
           />
         </Block>
-        <DrawerCustomItem title="Đăng xuất" navigation={navigation}/>
+        <DrawerCustomItem title="Đăng xuất" onPress={() => navigation.navigate('Home')}/>
         </ScrollView>
       </Block>
     </Block>

@@ -10,7 +10,7 @@ import nowTheme from '../constants/Theme';
 
 const { height, width } = Dimensions.get('window');
 const iPhoneX = () =>
-  Platform.OS === 'ios' && (height === 812 || width === 812 || height === 896 || width === 896);
+  Platform.OS === 'ios' && (height === 700 || width === 700 || height === 700 || width === 700);
 
 const BellButton = ({ isWhite, style, navigation }) => (
   <TouchableOpacity
@@ -199,6 +199,7 @@ class Header extends React.Component {
       iconColor,
       titleColor,
       navigation,
+        height,
       ...props
     } = this.props;
 

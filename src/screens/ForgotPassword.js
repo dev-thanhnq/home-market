@@ -52,7 +52,7 @@ export default function ForgotPassword({ navigation }) {
         <Background>
             {
                 (error.value) ? (
-                    <Text style={styles.loginError}>Có lỗi xảy ra vui lòng thử lại sau</Text>
+                    <Text style={styles.loginError}>Email không tồn tại</Text>
                 ) : (
                     <Text></Text>
                 )
