@@ -13,6 +13,11 @@ import Images from "../constants/Images";
 import { DrawerItem as DrawerCustomItem, Icon } from "../components";
 
 import nowTheme from "../constants/Theme";
+import { connect } from "react-redux";
+import { createStore } from 'redux'
+import userReducers from "./../state/reducers/userReducers";
+
+const store = createStore(userReducers)
 
 const { width } = Dimensions.get("screen");
 
@@ -88,4 +93,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CustomDrawerContent;
+const mapStateToProps = (state) => {
+  return {
+    user: state.userReducers
+  }
+}
+
+export default connect(mapStateToProps, null)(CustomDrawerContent);

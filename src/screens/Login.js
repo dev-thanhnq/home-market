@@ -10,8 +10,13 @@ import BackButton from '../components/BackButton'
 import { theme } from '../core/theme'
 import { userValidator } from '../helpers/userValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
+import { connect } from "react-redux";
+import { createStore } from 'redux'
+import userReducers from "./../state/reducers/userReducers";
 
-export default function LoginScreen({ navigation }) {
+const store = createStore(userReducers)
+
+function LoginScreen({ navigation }) {
   const [username, setUsername] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
     const [error, setError] = useState({ value: false})
@@ -44,6 +49,7 @@ export default function LoginScreen({ navigation }) {
               if (result.error) {
                   setError({ value: true });
               } else {
+                  store.dispatch(updateUser(result.user.username, result.user.avatar, result.token))
                   setUsername({value: ''});
                   setPassword({value: ''});
                   setError({ value: false });
@@ -55,6 +61,18 @@ export default function LoginScreen({ navigation }) {
 
               }
           );
+  }
+
+  const updateUser = (name, avatar, token) => {
+      return {
+          data:
+              {
+                  name: name,
+                  avatar: avatar,
+                  token: token
+              },
+          type: 'UPDATE_USER',
+      }
   }
 
   return (
@@ -126,3 +144,11 @@ const styles = StyleSheet.create({
       color: "#FF0000"
     }
 })
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.userReducers
+    }
+}
+
+export default connect(mapStateToProps, null)(LoginScreen)

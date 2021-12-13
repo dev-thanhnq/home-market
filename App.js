@@ -8,6 +8,11 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import Screens from './src/navigation/Screens';
 import { Images, articles, nowTheme } from './src/constants';
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import allReducers from "./src/state/reducers";
+
+const store = createStore(allReducers)
 
 // cache app images
 const assetImages = [
@@ -37,7 +42,7 @@ function cacheImages(images) {
   });
 }
 
-export default class App extends React.Component {
+class App extends React.Component {
   state = {
     isLoadingComplete: false,
     fontLoaded: false
@@ -55,21 +60,23 @@ export default class App extends React.Component {
   render() {
     if (!this.state.isLoadingComplete) {
       return (
-        <AppLoading
-          startAsync={this._loadResourcesAsync}
-          onError={this._handleLoadingError}
-          onFinish={this._handleFinishLoading}
-        />
+            <AppLoading
+                startAsync={this._loadResourcesAsync}
+                onError={this._handleLoadingError}
+                onFinish={this._handleFinishLoading}
+            />
       );
     } else {
       return (
-        <NavigationContainer>
-          <GalioProvider theme={nowTheme}>
-            <Block flex>
-              <Screens />
-            </Block>
-          </GalioProvider>
-        </NavigationContainer>
+          <Provider store={store}>
+            <NavigationContainer>
+                <GalioProvider theme={nowTheme}>
+                  <Block flex>
+                    <Screens />
+                  </Block>
+                </GalioProvider>
+            </NavigationContainer>
+          </Provider>
       );
     }
   }
@@ -96,3 +103,4 @@ export default class App extends React.Component {
     }
   };
 }
+export default App
