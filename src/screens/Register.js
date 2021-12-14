@@ -11,6 +11,7 @@ import { theme } from '../core/theme'
 import { userValidator } from '../helpers/userValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { emailValidator } from "../helpers/emailValidator";
+import {showMessage} from "react-native-flash-message";
 
 export default function Register({ navigation }) {
     const [username, setUsername] = useState({ value: '', error: '' })
@@ -51,7 +52,11 @@ export default function Register({ navigation }) {
                     setPassword({value: ''});
                     setEmail({value: ''})
                     setError({ value: false });
-                    navigation.navigate('Home')
+                    showMessage({
+                        message: "Đăng ký thành công",
+                        type: "success",
+                    });
+                    navigation.navigate('Login')
                 }
             })
             .catch(error =>  {
@@ -64,7 +69,7 @@ export default function Register({ navigation }) {
         <Background>
             {
                 (error.value) ? (
-                    <Text style={styles.loginError}>Có lỗi xảy ra vui lòng thử lại sau</Text>
+                    <Text style={styles.loginError}>Tài khoản đã tồn tại</Text>
                 ) : (
                     <Text></Text>
                 )

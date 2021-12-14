@@ -5,6 +5,7 @@ import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
 import { Block, GalioProvider } from 'galio-framework';
 import { NavigationContainer } from '@react-navigation/native';
+import FlashMessage from "react-native-flash-message";
 
 import Screens from './src/navigation/Screens';
 import { Images, articles, nowTheme } from './src/constants';
@@ -73,6 +74,7 @@ class App extends React.Component {
                 <GalioProvider theme={nowTheme}>
                   <Block flex>
                     <Screens />
+                    <FlashMessage position="top" />
                   </Block>
                 </GalioProvider>
             </NavigationContainer>

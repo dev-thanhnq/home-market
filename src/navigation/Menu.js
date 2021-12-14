@@ -67,11 +67,28 @@ function CustomDrawerContent({
             style={{ borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10}}
           />
         </Block>
-        <DrawerCustomItem title="Đăng xuất" onPress={() => navigation.navigate('Home')}/>
+          {/*{*/}
+          {/*  (!Object.keys(store.getState()).length === 0) ? (*/}
+          {/*      null*/}
+          {/*  ) : (*/}
+          {/*      <DrawerCustomItem title="Đăng xuất" onPress={(logout)}/>*/}
+          {/*  )*/}
+          {/*}*/}
         </ScrollView>
       </Block>
     </Block>
   );
+}
+
+const logout = () => {
+  store.dispatch(updateUser())
+}
+
+const updateUser = () => {
+  return {
+    data: {},
+    type: 'UPDATE_USER',
+  }
 }
 
 const styles = StyleSheet.create({
