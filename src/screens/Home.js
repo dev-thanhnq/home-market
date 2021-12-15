@@ -9,7 +9,7 @@ import Input from "../components/Input";
 import nowTheme from "../constants/Theme";
 import {inlineStyles} from "react-native-svg";
 const { width } = Dimensions.get("screen");
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 
 // const [page, setPage] = useState('1');
 class Home extends React.Component {
@@ -18,7 +18,13 @@ class Home extends React.Component {
     page: '1',
     search: "",
     toilet: "",
-    bedroom: ""
+    bedroom: "",
+      filter: false,
+      options: [
+          { value: 'chocolate', label: 'Chocolate' },
+          { value: 'strawberry', label: 'Strawberry' },
+          { value: 'vanilla', label: 'Vanilla' }
+      ]
   }
 
   async componentDidMount() {
@@ -30,19 +36,23 @@ class Home extends React.Component {
           method: 'GET',
           redirect: 'follow'
       };
-      fetch("http://47.254.253.64:5000/api/posts?page="
-      + this.state.page + "&filter=address:"
-      + this.state.search
-      + (this.state.toilet ? ",toilet:" + this.state.toilet : "")
-      + (this.state.bedroom ? ",bedroom:" + this.state.bedroom : ""), requestOptions)
-          .then(response => response.json())
-          .then(result => {
-              this.setState({
-                  homeData: result["posts"]
+      this.setState({
+          homeData: []
+      }, function () {
+          fetch("http://47.254.253.64:5000/api/posts?page="
+              + this.state.page + "&filter=address:"
+              + this.state.search
+              + (this.state.toilet ? ",toilet:" + this.state.toilet : "")
+              + (this.state.bedroom ? ",bedroom:" + this.state.bedroom : ""), requestOptions)
+              .then(response => response.json())
+              .then(result => {
+                  this.setState({
+                      homeData: result["posts"]
+                  })
+                  console.log('__________________________________1')
               })
-              console.log('__________________________________1')
-          })
-          .catch(error => console.log('error', error));
+              .catch(error => console.log('error', error));
+      })
   }
 
   renderHomeData = (item) => {
@@ -109,59 +119,69 @@ class Home extends React.Component {
         );
     };
 
-  renderFilter = () => {
-      return (
-          <Block row middle>
-              <Block row>
+  toggleFilter() {
+      this.setState({filter: !this.state.filter})
+  }
 
-                  <TextInput
-                      textAlign={'center'}
-                      color="black"
-                      style={styles.filter}
-                      placeholder="Số trang"
-                      placeholderTextColor={'#8898AA'}
-                      value={this.state.page}
-                      // onChangeText={(page) => this.setState({page})}
-                      keyboardType='numeric'
-                  />
+  renderFilter = () => {
+      if (!this.state.filter) {
+          return (
+              <Button
+                  style={styles.filterBtn}
+                  onPress={() => this.toggleFilter()}
+              >
+                Bật bộ lọc
+              </Button>
+          )
+      } else {
+          return (
+              <Block left>
+                  <Block row left>
+                      <Block row>
+                          <Input
+                              right
+                              color="black"
+                              style={styles.filterSearch}
+                              placeholder="Toilet"
+                              placeholderTextColor={'#8898AA'}
+                              iconContent={
+                                  <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra"/>
+                              }
+                              value={this.state.toilet}
+                              onChangeText={(toilet) => this.setState({toilet})}
+                          />
+                      </Block>
+                      <Block row>
+                          <Input
+                              right
+                              color="black"
+                              style={styles.filterSearch}
+                              placeholder="Phòng ngủ"
+                              placeholderTextColor={'#8898AA'}
+                              iconContent={
+                                  <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra"/>
+                              }
+                              value={this.state.bedroom}
+                              onChangeText={(bedroom) => this.setState({bedroom})}
+                          />
+                      </Block>
+                  </Block>
+                  <Block>
+                      <Button
+                          style={styles.filterBtn}
+                          onPress={() => this.toggleFilter()}
+                      >
+                          Tắt bộ lọc
+                      </Button>
+                  </Block>
               </Block>
-              <Block row>
-                  <TextInput
-                      textAlign={'center'}
-                      color="black"
-                      style={styles.filter}
-                      placeholder="Số trang"
-                      placeholderTextColor={'#8898AA'}
-                      value={this.state.page}
-                      // onChangeText={(page) => this.setState({page})}
-                      keyboardType='numeric'
-                  />
-              </Block>
-              <Block row>
-                  <TextInput
-                      textAlign={'center'}
-                      color="black"
-                      style={styles.filter}
-                      placeholder="Số trang"
-                      placeholderTextColor={'#8898AA'}
-                      value={this.state.page}
-                      // onChangeText={(page) => this.setState({page})}
-                      keyboardType='numeric'
-                  />
-              </Block>
-          </Block>
-      );
+          );
+      }
   }
 
     renderSearch = () => {
-        const { navigation } = this.props;
         return (
             <Block middle>
-                {/*<Block row>*/}
-                {/*    <Radio onChange={() => } row label="Địa chỉ" color="primary"  />*/}
-                {/*    <Radio row label="Nhà tắm" color="info"  />*/}
-                {/*    <Radio row label="Toilet" color="error"  />*/}
-                {/*</Block>*/}
                 <Block row >
                     <Block row>
                         <Input
@@ -187,36 +207,6 @@ class Home extends React.Component {
                         </Button>
                     </Block>
                 </Block>
-                {/*<Block row left>*/}
-                {/*    <Block row>*/}
-                {/*        <Input*/}
-                {/*            right*/}
-                {/*            color="black"*/}
-                {/*            style={styles.filterSearch}*/}
-                {/*            placeholder="Toilet"*/}
-                {/*            placeholderTextColor={'#8898AA'}*/}
-                {/*            iconContent={*/}
-                {/*                <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra" />*/}
-                {/*            }*/}
-                {/*            value={this.state.toilet}*/}
-                {/*            onChangeText={(toilet) => this.setState({toilet})}*/}
-                {/*        />*/}
-                {/*    </Block>*/}
-                {/*    <Block row>*/}
-                {/*        <Input*/}
-                {/*            right*/}
-                {/*            color="black"*/}
-                {/*            style={styles.filterSearch}*/}
-                {/*            placeholder="Phòng ngủ"*/}
-                {/*            placeholderTextColor={'#8898AA'}*/}
-                {/*            iconContent={*/}
-                {/*                <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra" />*/}
-                {/*            }*/}
-                {/*            value={this.state.bedroom}*/}
-                {/*            onChangeText={(bedroom) => this.setState({bedroom})}*/}
-                {/*        />*/}
-                {/*    </Block>*/}
-                {/*</Block>*/}
             </Block>
         );
     };
@@ -243,6 +233,7 @@ class Home extends React.Component {
                 contentContainerStyle={styles.articles}
             >
                 {this.renderSearch()}
+                {this.renderFilter()}
               <Block flex>
                 {payment}
               </Block>
@@ -252,9 +243,22 @@ class Home extends React.Component {
       );
     } else {
       return (
-          <Block>
-            <ActivityIndicator size="large" />
+          <Block flex center style={styles.home}>
+              <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={styles.articles}
+              >
+                  {this.renderSearch()}
+                  {this.renderFilter()}
+                  <Block flex style={styles.loading}>
+                      <ActivityIndicator size="large" color="#ff5722" />
+                  </Block>
+                  {this.renderFooter()}
+              </ScrollView>
           </Block>
+          // <Block style={styles.loading}>
+          //   <ActivityIndicator size="large" color="#ff5722" />
+          // </Block>
       )
     }
   }
@@ -329,6 +333,14 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         borderColor: nowTheme.COLORS.BORDER
     },
+    filterBtn: {
+        height: 20,
+        width: 100
+    },
+    loading: {
+      marginTop: 50,
+      height: 400
+    }
 });
 
 export default Home;
