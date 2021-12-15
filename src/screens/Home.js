@@ -57,7 +57,7 @@ class Home extends React.Component {
 
   renderHomeData = (item) => {
     return (
-        <Card item={item} key={item.post_id} horizontal />
+        <Card item={item} key={item.post_id} horizontal/>
     );
   };
 
