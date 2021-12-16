@@ -26,12 +26,13 @@ const detailScreen = ({navigation, route}) => {
     const [data, setData] = useState("");
     const {idPost} = route.params;
     useEffect(() => {
-        if (!store.getState()) {
-            console.log(store.getState())
-            navigation.navigate("Login")
-        } else {
-            loadData()
-        }
+        // if (!store.getState()) {
+        //     console.log(store.getState())
+        //     navigation.navigate("Login")
+        // } else {
+        //     loadData()
+        // }
+        loadData()
     }, [])
 
     const loadData = async () => {
@@ -39,7 +40,8 @@ const detailScreen = ({navigation, route}) => {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + store.getState()
+                    'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzOTYyMzQwNSwianRpIjoiODg2YWY2YzAtZTlmNi00NjE5LWI0ZDktMGE0OGI0ZGI1MGE5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2Mzk2MjM0MDUsImV4cCI6MTY0MDIyODIwNX0.oHZBK' +
+                        'PNV-SMIAQHPb3lC--UHTbH5OmCcstia-wMV2Hk'
                 }
             })
             .then(res => res.json())

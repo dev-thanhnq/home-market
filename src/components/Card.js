@@ -12,6 +12,10 @@ class Card extends React.Component {
     return (str.length > n) ? str.substr(0, n - 1) + '...' : str;
   }
 
+  getToken() {
+
+  }
+
   render() {
     const {
       navigation,
