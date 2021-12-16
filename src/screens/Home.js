@@ -154,9 +154,6 @@ class Home extends React.Component {
                               style={styles.filterSearch}
                               placeholder="Toilet"
                               placeholderTextColor={'#8898AA'}
-                              iconContent={
-                                  <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra"/>
-                              }
                               value={this.state.toilet}
                               onChangeText={(toilet) => this.setState({toilet})}
                               keyboardType="numeric"
@@ -167,18 +164,15 @@ class Home extends React.Component {
                               right
                               color="black"
                               style={styles.filterSearch}
-                              placeholder="Phòng ngủ"
+                              placeholder="Bedroom"
                               placeholderTextColor={'#8898AA'}
-                              iconContent={
-                                  <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra"/>
-                              }
                               value={this.state.bedroom}
                               onChangeText={(bedroom) => this.setState({bedroom})}
                               keyboardType="numeric"
                           />
                       </Block>
                   </Block>
-                  <Block style={{width: 200, paddingLeft: 14}}>
+                  <Block style={{width: 220, paddingLeft: 14}}>
                       <RNPickerSelect
                           useNativeAndroidPickerStyle={false}
                           onValueChange={(value) => this.setState({district: value})}
@@ -212,9 +206,6 @@ class Home extends React.Component {
                             placeholder="Nhập thông tin cần tìm kiếm"
                             placeholderTextColor={'#8898AA'}
                             // onFocus={() => {Keyboard.dismiss(); navigation.navigate('Pro')}}
-                            iconContent={
-                                <Icon size={16} color={theme.COLORS.MUTED} name="zoom-bold2x" family="NowExtra" />
-                            }
                             value={this.state.search}
                             onChangeText={(search) => this.setState({search})}
                         />
@@ -348,7 +339,7 @@ const styles = StyleSheet.create({
     },
     filterSearch: {
         height: 40,
-        width: width - 240,
+        width: width - 320,
         marginHorizontal: 10,
         borderWidth: 1,
         borderRadius: 30,

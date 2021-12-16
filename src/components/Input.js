@@ -26,14 +26,6 @@ class ArInput extends React.Component {
         placeholderTextColor={nowTheme.COLORS.MUTED}
         style={inputStyles}
         color={nowTheme.COLORS.HEADER}
-        iconContent={
-          <Icon
-            size={14}
-            color={nowTheme.COLORS.ICON}
-            name="link"
-            family="AntDesign"
-          />
-        }
         {...this.props}
       />
     );

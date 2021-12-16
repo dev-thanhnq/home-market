@@ -1,6 +1,6 @@
 export default [
     {
-        label: "Tất cả quận, huyện",
+        label: "Quận, huyện",
         value: ""
     },
     {
