@@ -11,6 +11,7 @@ import { theme } from '../core/theme'
 import { userValidator } from '../helpers/userValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { emailValidator } from "../helpers/emailValidator";
+import {showMessage} from "react-native-flash-message";
 
 export default function ForgotPassword({ navigation }) {
     const [email, setEmail] = useState({ value: '', error: '' })
@@ -39,6 +40,10 @@ export default function ForgotPassword({ navigation }) {
                 } else {
                     setEmail({value: ''})
                     setError({ value: false });
+                    showMessage({
+                        message: "Vui lòng kiểm tra email",
+                        type: "success",
+                    });
                     navigation.navigate('Login')
                 }
             })
