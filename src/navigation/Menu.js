@@ -11,6 +11,7 @@ import { Block, Text, theme } from "galio-framework";
 import { useSafeArea } from "react-native-safe-area-context";
 import Images from "../constants/Images";
 import { DrawerItem as DrawerCustomItem, Icon } from "../components";
+import Button from '../components/Button'
 
 import nowTheme from "../constants/Theme";
 import { connect } from "react-redux";
@@ -67,26 +68,27 @@ function CustomDrawerContent({
             style={{ borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10}}
           />
         </Block>
-          {/*{*/}
-          {/*  (!Object.keys(store.getState()).length === 0) ? (*/}
-          {/*      null*/}
-          {/*  ) : (*/}
-          {/*      <DrawerCustomItem title="Đăng xuất" onPress={(logout)}/>*/}
-          {/*  )*/}
-          {/*}*/}
+          {
+            (store.getState()) ? (
+                null
+            ) : (
+                <Button title="Đăng xuất" onPress={(logout)}>Đăng xuất</Button>
+            )
+          }
         </ScrollView>
       </Block>
     </Block>
   );
 }
 
-const logout = () => {
+const logout = ({navigation}) => {
+  console.log('menu:', store.getState())
   store.dispatch(updateUser())
 }
 
 const updateUser = () => {
   return {
-    data: {},
+    data: '',
     type: 'UPDATE_USER',
   }
 }

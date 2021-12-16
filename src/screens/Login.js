@@ -53,41 +53,33 @@ function LoginScreen({ navigation }) {
               if (result.error) {
                   setError({ value: true });
               } else {
-                  console.log(store.getState())
-                  store.dispatch(updateUser(result.user.username, result.user.avatar, result.token))
+                  store.dispatch(updateUser(result.token))
                   setUsername({value: ''});
                   setPassword({value: ''});
                   setError({ value: false });
                   setIslogin({ value: true})
                   setName({value: result.user.username})
-                  console.log(store.getState())
                   showMessage({
                       message: "Đăng nhập thành công",
                       type: "success",
                   });
-                  navigation.goBack();
+                  navigation.navigate('Home');
               }
           })
           .catch(error =>  {
                 console.log('error', error)
-
               }
           );
   }
 
-  const updateUser = (name, avatar, token) => {
+  const updateUser = (token) => {
       return {
-          data:
-              {
-                  name: name,
-                  avatar: avatar,
-                  token: token
-              },
+          data: token,
           type: 'UPDATE_USER',
       }
   }
 
-  return (
+  return store.getState() === '' ? (
       <Background>
           {
               (error.value) ? (
@@ -164,6 +156,12 @@ function LoginScreen({ navigation }) {
                   null
               )
           }
+      </Background>
+  ) : (
+      <Background>
+          <Text style={styles.nameStyle}>
+              {name.value}
+          </Text>
       </Background>
   )
 }

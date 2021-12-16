@@ -154,6 +154,21 @@ function HomeStack(props) {
                 }}
             />
             <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{
+                    header: ({navigation, scene}) => (
+                        <Header
+                            transparent
+                            title="Đăng nhập"
+                            navigation={navigation}
+                            scene={scene}
+                        />
+                    ),
+                    headerTransparent: true
+                }}
+            />
+            <Stack.Screen
                 name="Pro"
                 component={Pro}
                 options={{

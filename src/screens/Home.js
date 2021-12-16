@@ -3,7 +3,9 @@ import { Block, theme, Text, Radio } from "galio-framework";
 
 import { Card, Button } from "../components";
 import articles from "../constants/articles";
+import district from "../constants/district";
 import {View} from "react-native-reanimated";
+import RNPickerSelect from 'react-native-picker-select';
 import Icon from "../components/Icon";
 import Input from "../components/Input";
 import nowTheme from "../constants/Theme";
@@ -24,7 +26,8 @@ class Home extends React.Component {
           { value: 'chocolate', label: 'Chocolate' },
           { value: 'strawberry', label: 'Strawberry' },
           { value: 'vanilla', label: 'Vanilla' }
-      ]
+      ],
+      district: ''
   }
 
   async componentDidMount() {
@@ -39,11 +42,18 @@ class Home extends React.Component {
       this.setState({
           homeData: []
       }, function () {
+          // console.log("http://47.254.253.64:5000/api/posts?page="
+          //     + this.state.page + "&filter=address:"
+          //     + (this.state.district ? "" + this.state.district : "")
+          //     + (this.state.toilet ? ",toilet:" + this.state.toilet : "")
+          //     + (this.state.bedroom ? ",bedroom:" + this.state.bedroom : "")
+          //     + (this.state.search ? "&search=" + this.state.search : ""))
           fetch("http://47.254.253.64:5000/api/posts?page="
               + this.state.page + "&filter=address:"
-              + this.state.search
+              + (this.state.district ? "" + this.state.district : "")
               + (this.state.toilet ? ",toilet:" + this.state.toilet : "")
-              + (this.state.bedroom ? ",bedroom:" + this.state.bedroom : ""), requestOptions)
+              + (this.state.bedroom ? ",bedroom:" + this.state.bedroom : "")
+              + (this.state.search ? "&search=" + this.state.search : ""), requestOptions)
               .then(response => response.json())
               .then(result => {
                   this.setState({
@@ -149,6 +159,7 @@ class Home extends React.Component {
                               }
                               value={this.state.toilet}
                               onChangeText={(toilet) => this.setState({toilet})}
+                              keyboardType="numeric"
                           />
                       </Block>
                       <Block row>
@@ -163,10 +174,20 @@ class Home extends React.Component {
                               }
                               value={this.state.bedroom}
                               onChangeText={(bedroom) => this.setState({bedroom})}
+                              keyboardType="numeric"
                           />
                       </Block>
                   </Block>
-                  <Block>
+                  <Block style={{width: 200, paddingLeft: 14}}>
+                      <RNPickerSelect
+                          useNativeAndroidPickerStyle={false}
+                          onValueChange={(value) => this.setState({district: value})}
+                          items={district}
+                          value={this.state.district}
+                          fixAndroidTouchableBug={true}
+                      />
+                  </Block>
+                  <Block middle>
                       <Button
                           style={styles.filterBtn}
                           onPress={() => this.toggleFilter()}

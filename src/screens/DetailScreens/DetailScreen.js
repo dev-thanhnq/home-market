@@ -14,6 +14,11 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import { SliderBox } from "react-native-image-slider-box";
 import call from 'react-native-phone-call'
+import { connect } from "react-redux";
+import { createStore } from 'redux'
+import userReducers from "./../../state/reducers/userReducers";
+
+const store = createStore(userReducers)
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -21,7 +26,12 @@ const detailScreen = ({navigation, route}) => {
     const [data, setData] = useState("");
     const {idPost} = route.params;
     useEffect(() => {
-        loadData()
+        if (!store.getState()) {
+            console.log(store.getState())
+            navigation.navigate("Login")
+        } else {
+            loadData()
+        }
     }, [])
 
     const loadData = async () => {
@@ -29,7 +39,7 @@ const detailScreen = ({navigation, route}) => {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzOTQxOTA2MywianRpIjoiNjA0NzViZGMtMWFlZi00MTM3LTk2ZmUtZjc2MGFkNTBiOTM3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIiLCJuYmYiOjE2Mzk0MTkwNjMsImV4cCI6MTY0MDAyMzg2M30.p0kXiZWhJZ-N__-bmnuPYpGMJDGusnPqSIEqC5B9KX0'
+                    'Authorization': 'Bearer ' + store.getState()
                 }
             })
             .then(res => res.json())
@@ -172,4 +182,10 @@ const styles = StyleSheet.create({
         marginTop: 5
     }
 });
-export default detailScreen;
+
+const mapStateToProps = (state) => {
+    return {
+        user: state.userReducers
+    }
+}
+export default connect(mapStateToProps, null)(detailScreen);
