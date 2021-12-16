@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     },
     filterSearch: {
         height: 40,
-        width: width - 320,
+        width: width - 270,
         marginHorizontal: 10,
         borderWidth: 1,
         borderRadius: 30,
