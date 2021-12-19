@@ -120,8 +120,9 @@ function ProfileStack(props) {
                 options={{
                     header: ({navigation, scene}) => (
                         <Header
-                            transparent
-                            title="Bài của tôi"
+                            title="Info"
+                            search
+                            options
                             navigation={navigation}
                             scene={scene}
                         />
@@ -191,6 +192,21 @@ function HomeStack(props) {
             <Stack.Screen name="mapView"
                           component={mapView}
             />
+            <Stack.Screen
+                name="ForgotPassword"
+                component={ForgotPassword}
+                options={{
+                    header: ({navigation, scene}) => (
+                        <Header
+                            transparent
+                            title="Quên mật khẩu"
+                            navigation={navigation}
+                            scene={scene}
+                        />
+                    ),
+                    headerTransparent: true
+                }}
+            />
         </Stack.Navigator>
     );
 }
@@ -228,8 +244,8 @@ function AppStack(props) {
         >
             <Drawer.Screen name="Trang chủ" component={HomeStack}/>
             <Drawer.Screen name="Theo dõi" component={ComponentsStack}/>
-            <Drawer.Screen name="Bài của tôi" component={ProfileStack}/>
-            <Drawer.Screen name="Tài khoản" component={LoginStack}/>
+            <Drawer.Screen name="Tài khoản" component={ProfileStack}/>
+            <Drawer.Screen name="Đăng nhập" component={LoginStack}/>
             {/*<Drawer.Screen name="Đăng ký" component={RegisterStack} />*/}
         </Drawer.Navigator>
     );

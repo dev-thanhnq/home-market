@@ -14,6 +14,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import { SliderBox } from "react-native-image-slider-box";
 import call from 'react-native-phone-call'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from "react-redux";
 import { createStore } from 'redux'
 import userReducers from "./../../state/reducers/userReducers";
@@ -26,22 +27,33 @@ const detailScreen = ({navigation, route}) => {
     const [data, setData] = useState("");
     const {idPost} = route.params;
     useEffect(() => {
-        // if (!store.getState()) {
-        //     console.log(store.getState())
-        //     navigation.navigate("Login")
-        // } else {
-        //     loadData()
-        // }
-        loadData()
+        console.log('abc', getUserId())
+        if (!getUserId()) {
+            navigation.navigate("Login")
+        } else {
+            console.log('store', AsyncStorage.getItem('token'))
+            loadData()
+        }
+        // loadData()
     }, [])
+
+    const getUserId = async () => {
+        let token = '';
+        try {
+            token = await AsyncStorage.getItem('token') || '';
+        } catch (error) {
+            // Error retrieving data
+            console.log(error.message);
+        }
+        return token;
+    }
 
     const loadData = async () => {
         await fetch('http://47.254.253.64:5000/api/post/' + idPost,
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzOTYyMzQwNSwianRpIjoiODg2YWY2YzAtZTlmNi00NjE5LWI0ZDktMGE0OGI0ZGI1MGE5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2Mzk2MjM0MDUsImV4cCI6MTY0MDIyODIwNX0.oHZBK' +
-                        'PNV-SMIAQHPb3lC--UHTbH5OmCcstia-wMV2Hk'
+                    'Authorization': 'Bearer ' + getUserId()
                 }
             })
             .then(res => res.json())

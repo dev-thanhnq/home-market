@@ -33,7 +33,8 @@ function CustomDrawerContent({
   const insets = useSafeArea();
   const screens = [
     "Trang chủ",
-    "Tài khoản"
+    "Tài khoản",
+      "Đăng nhập"
   ];
   return (
     <Block

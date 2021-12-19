@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import {TouchableOpacity, StyleSheet, View, Image} from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
@@ -12,6 +12,7 @@ import { theme } from '../core/theme'
 import { userValidator } from '../helpers/userValidator'
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { passwordValidator } from '../helpers/passwordValidator'
+import { AsyncStorage } from 'react-native';
 import { connect } from "react-redux";
 import { createStore } from 'redux'
 import userReducers from "./../state/reducers/userReducers";
@@ -34,10 +35,6 @@ function LoginScreen({ navigation }) {
       setPassword({ ...password, error: passwordError })
       return
     }
-    // navigation.reset({
-    //   index: 0,
-    //   routes: [{ name: 'Dashboard' }],
-    // })
 
       let formdata = new FormData();
       formdata.append("username", username.value)
@@ -63,6 +60,7 @@ function LoginScreen({ navigation }) {
                       message: "Đăng nhập thành công",
                       type: "success",
                   });
+                  saveToken(result.token)
                   navigation.navigate('Home');
               }
           })
@@ -78,6 +76,27 @@ function LoginScreen({ navigation }) {
           type: 'UPDATE_USER',
       }
   }
+
+    const saveToken = async (token) => {
+        try {
+            await AsyncStorage.setItem('token', token, function () {
+                console.log(getUserToken())
+            })
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
+    const getUserToken = async () => {
+        let token = '';
+        try {
+            token = await AsyncStorage.getItem('token');
+        } catch (error) {
+            // Error retrieving data
+            console.log(error.message);
+        }
+        return token;
+    }
 
   return store.getState() === '' ? (
       <Background>
