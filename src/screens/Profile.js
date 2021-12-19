@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from "react-redux";
 import { createStore } from 'redux'
 import userReducers from "./../state/reducers/userReducers";
-import {launchImageLibrary} from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 const store = createStore(userReducers)
 
@@ -72,6 +72,9 @@ const LoginScreen = ({ navigation }) => {
     }
     if (newpassword.value) {
       formdata.append("new_password", newpassword.value)
+    }
+    if (avatar.value) {
+        formdata.append("avatar", avatar.value)
     }
     var requestOptions = {
       method: 'PUT',
@@ -134,7 +137,6 @@ const LoginScreen = ({ navigation }) => {
           setPhone({ value: result.phone })
           setAddress({ value: result.address })
           setAvatar({ value: result.avatar })
-          console.log(result)
           setLoading({ value: false})
         })
         .catch(error => {
@@ -144,64 +146,70 @@ const LoginScreen = ({ navigation }) => {
         });
   }
 
-  // const pickImage = () => {
-  //   var option = {
-  //     mediaType: 'photo'
-  //   }
-  //   launchImageLibrary(option, response => {
-  //     console.log(response)
-  //   }).then()
-  // }
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
 
-  const updateUser = (token) => {
-    return {
-      data: token,
-      type: 'UPDATE_USER',
-    }
-  }
+        if (!result.cancelled) {
+            console.log('uri', result.uri)
+            // ImagePicker saves the taken photo to disk and returns a local URI to it
+            let localUri = result.uri;
+            let filename = localUri.split('/').pop();
 
-  const saveToken = async (token) => {
-    console.log(token)
-    // try {
-    //     await AsyncStorage.setItem('token', token);
-    // } catch (error) {
-    //     console.log(error.message);
-    // }
-  };
+            // Infer the type of the image
+            let match = /\.(\w+)$/.exec(filename);
+            let type = match ? `image/${match[1]}` : `image`;
 
-  const getUserId = async () => {
-    let token = '';
-    try {
-      token = await AsyncStorage.getItem('token') || 'none';
-    } catch (error) {
-      // Error retrieving data
-      console.log(error.message);
-    }
-    return token;
-  }
+            // Upload the image using the fetch and FormData APIs
+            let formdata = new FormData();
+            // Assume "photo" is the name of the form field the server expects
+            formdata.append('image_1', { uri: localUri, name: filename, type });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: {
+                    'content-type': 'multipart/form-data',
+                    'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzOTkzNTI5MiwianRpIjoiMTAyYmI0ZjMtYTFmYi00MmZkLWFiZTAtZTE3NDI4ZTUyZTE5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2Mzk5MzUyOTIsImV4cCI6MTY0MDU0MDA5Mn0.eVUFkkUFvC3tB7HSOClUmTwJeGj7hwI3Sztju_oX1ts'
+                },
+                body: formdata
+            };
+            setLoading({ value: true})
+            await fetch("http://47.254.253.64:5000/api/image", requestOptions)
+                .then(res => res.json())
+                .then(result => {
+                    if (result.images[0]) {
+                        setAvatar({ value: result.images[0]});
+                    }
+                    setLoading({ value: false})
+                })
+                .catch(error => {
+                    setLoading({ value: false})
+                    console.log('Error', error.message);
+                    throw error;
+                });
+        }
+    };
 
   return !loading.value ? (
       <Block  style={{marginTop: '27%', paddingLeft: 40, paddingRight: 40, textAlign: 'center'}}>
         <ScrollView style={{width: '100%'}} showsVerticalScrollIndicator={false}>
         {
-          (error.value) ? (
-              <Text style={styles.loginError}>Tài khoản hoặc mật khẩu không chính xác</Text>
-          ) : (
-              <Text></Text>
-          )
-        }
-        {
           (!avatar.value) ? (
             <Block style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Image
-                  style={{width: 100, height: 100, borderRadius: 50}}
+                  style={{width: 150, height: 150, borderRadius: 75}}
                   source={require('../../assets/imgs/user.png')}
               />
             </Block>
           ) : (
             <Block style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Image
-                  style={{width: 100, height: 100, borderRadius: 50}}
+                  style={{width: 150, height: 150, borderRadius: 75}}
                   source={{
                     uri: avatar.value,
                   }}
@@ -209,6 +217,11 @@ const LoginScreen = ({ navigation }) => {
             </Block>
           )
         }
+            <Block style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <Text onPress={pickImage} style={{fontSize: 12, color: '#4285f4', marginBottom: 20}}>
+                    Chọn ảnh
+                </Text>
+            </Block>
           <Block style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Text style={styles.nameStyle}>
               {name.value}
