@@ -5,9 +5,10 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-  Linking
+  Linking,
+    Text
 } from "react-native";
-import { Block, Text, theme } from "galio-framework";
+import { Block, theme } from "galio-framework";
 import { useSafeArea } from "react-native-safe-area-context";
 import Images from "../constants/Images";
 import { DrawerItem as DrawerCustomItem, Icon } from "../components";
@@ -34,7 +35,9 @@ function CustomDrawerContent({
   const screens = [
     "Trang chủ",
     "Tài khoản",
-      "Đăng nhập"
+      "Đăng nhập",
+      "Bài viết theo dõi",
+      "Bài viết của tôi"
   ];
   return (
     <Block

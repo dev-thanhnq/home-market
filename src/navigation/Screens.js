@@ -15,6 +15,8 @@ import SettingsScreen from '../screens/Settings';
 import Login from "../screens/Login";
 import Register from "../screens/Register";
 import DetailScreens from "../screens/DetailScreens/DetailScreen"
+import FollowList from "../screens/FollowList"
+import MyPost from "../screens/MyPost"
 // drawer
 import CustomDrawerContent from "./Menu";
 // header for screens
@@ -192,6 +194,22 @@ function HomeStack(props) {
             <Stack.Screen name="mapView"
                           component={mapView}
             />
+            <Stack.Screen name="FollowList"
+                          component={FollowList}
+                          options={{
+                              header: ({navigation, scene}) => (
+                                  <Header
+                                      title=""
+                                      back
+                                      white
+                                      transparent
+                                      navigation={navigation}
+                                      scene={scene}
+                                  />
+                              ),
+                              headerTransparent: true
+                          }}
+            />
             <Stack.Screen
                 name="ForgotPassword"
                 component={ForgotPassword}
@@ -206,6 +224,57 @@ function HomeStack(props) {
                     ),
                     headerTransparent: true
                 }}
+            />
+        </Stack.Navigator>
+    );
+}
+
+function FollowStack(props) {
+    return (
+        <Stack.Navigator initialRouteName="FollowList" mode="card" headerMode="screen">
+            <Stack.Screen
+                  name="FollowList"
+                  component={FollowList}
+                  options={{
+                      header: ({navigation, scene}) => (
+                          <Header
+                              title="Bài viết theo dõi"
+                              white
+                              transparent
+                              navigation={navigation}
+                              scene={scene}
+                          />
+                      ),
+                      // headerTransparent: true
+                  }}
+            />
+            <Stack.Screen name="detailsScreen"
+                          component={DetailScreens}
+            />
+        </Stack.Navigator>
+    );
+}
+
+function MyPostStack(props) {
+    return (
+        <Stack.Navigator initialRouteName="MyPost" mode="card" headerMode="screen">
+            <Stack.Screen
+                  name="FollowList"
+                  component={MyPost}
+                  options={{
+                      header: ({navigation, scene}) => (
+                          <Header
+                              title="Bài viết của tôi"
+                              white
+                              transparent
+                              navigation={navigation}
+                              scene={scene}
+                          />
+                      ),
+                  }}
+            />
+            <Stack.Screen name="detailsScreen"
+                          component={DetailScreens}
             />
         </Stack.Navigator>
     );
@@ -243,10 +312,10 @@ function AppStack(props) {
             initialRouteName="Trang chủ"
         >
             <Drawer.Screen name="Trang chủ" component={HomeStack}/>
-            <Drawer.Screen name="Theo dõi" component={ComponentsStack}/>
             <Drawer.Screen name="Tài khoản" component={ProfileStack}/>
             <Drawer.Screen name="Đăng nhập" component={LoginStack}/>
-            {/*<Drawer.Screen name="Đăng ký" component={RegisterStack} />*/}
+            <Drawer.Screen name="Bài viết theo dõi" component={FollowStack} />
+            <Drawer.Screen name="Bài viết của tôi" component={MyPostStack} />
         </Drawer.Navigator>
     );
 }

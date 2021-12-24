@@ -18,6 +18,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from "react-redux";
 import { createStore } from 'redux'
 import userReducers from "./../../state/reducers/userReducers";
+import {showMessage} from "react-native-flash-message";
+import ButtonCustom from '../../components/Button'
 
 const store = createStore(userReducers)
 
@@ -27,14 +29,7 @@ const detailScreen = ({navigation, route}) => {
     const [data, setData] = useState("");
     const {idPost} = route.params;
     useEffect(() => {
-        console.log('abc', getUserId())
-        if (!getUserId()) {
-            navigation.navigate("Login")
-        } else {
-            console.log('store', AsyncStorage.getItem('token'))
-            loadData()
-        }
-        // loadData()
+        loadData()
     }, [])
 
     const getUserId = async () => {
@@ -53,7 +48,7 @@ const detailScreen = ({navigation, route}) => {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + getUserId()
+                    'Authorization': 'Bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0MDI3Njg3MywianRpIjoiMjk4MTk5NTQtNjRjNC00Yzg0LTg2YWQtOGMzZDU0NjUzNTU3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2NDAyNzY4NzMsImV4cCI6MTY0MDg4MTY3M30.c0l_LquPxzUlRYPBbCP48Zx_wBtfpQKZEcf0PF0Ub0g"
                 }
             })
             .then(res => res.json())
@@ -74,6 +69,63 @@ const detailScreen = ({navigation, route}) => {
        call(args).catch(console.error)
    }
 
+   const addToFollowList = async () => {
+       await fetch('http://47.254.253.64:5000/api/post/follow/' + idPost,
+           {
+               method: 'POST',
+               headers: {
+                   'Authorization': 'Bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0MDI3Njg3MywianRpIjoiMjk4MTk5NTQtNjRjNC00Yzg0LTg2YWQtOGMzZDU0NjUzNTU3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2NDAyNzY4NzMsImV4cCI6MTY0MDg4MTY3M30.c0l_LquPxzUlRYPBbCP48Zx_wBtfpQKZEcf0PF0Ub0g"
+               }
+           })
+           .then(res => res.json())
+           .then(data => {
+               if (data.msg === "done") {
+                   loadData()
+                   showMessage({
+                       message: "Đã theo dõi bài viết",
+                       type: "success",
+                   });
+               } else {
+                   showMessage({
+                       message: "Thất bại",
+                       type: "danger",
+                   });
+               }
+           })
+           .catch(error => {
+               console.log('Error', error.message);
+               throw error;
+           });
+   }
+
+    const deleteToFollowList = async () => {
+        await fetch('http://47.254.253.64:5000/api/post/follow/' + idPost,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0MDI3Njg3MywianRpIjoiMjk4MTk5NTQtNjRjNC00Yzg0LTg2YWQtOGMzZDU0NjUzNTU3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2NDAyNzY4NzMsImV4cCI6MTY0MDg4MTY3M30.c0l_LquPxzUlRYPBbCP48Zx_wBtfpQKZEcf0PF0Ub0g"
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.msg === "done") {
+                    loadData()
+                    showMessage({
+                        message: "Đã bỏ theo dõi bài viết",
+                        type: "success",
+                    });
+                } else {
+                    showMessage({
+                        message: "Thất bại",
+                        type: "danger",
+                    });
+                }
+            })
+            .catch(error => {
+                console.log('Error', error.message);
+                throw error;
+            });
+    }
 
     return data instanceof Object ? (
         <SafeAreaView style={styles.container}>
@@ -83,7 +135,20 @@ const detailScreen = ({navigation, route}) => {
                     {data.title}
                 </Text>
                 <View style={styles.fakeLine}></View>
-                <View style={{marginTop: 10,}}>
+                {
+                    (data.followed) ? (
+                        <View style={{flexDirection: 'row', marginTop: 10}}>
+                            <Ionicons onPress={deleteToFollowList} name="heart" size={24} color="red" style={styles.iconDecoration}/>
+                            <Text onPress={deleteToFollowList} style={{fontWeight: 'bold', width: windowWidth - 50, flexWrap: 'wrap', marginTop: 2}}>Đã theo dõi</Text>
+                        </View>
+                    ) : (
+                        <View style={{flexDirection: 'row', marginTop: 10}}>
+                            <Ionicons onPress={addToFollowList} name="heart-outline" size={24} color="red" style={styles.iconDecoration}/>
+                            <Text onPress={addToFollowList} style={{fontWeight: 'bold', width: windowWidth - 50, flexWrap: 'wrap', marginTop: 2}}>Theo dõi</Text>
+                        </View>
+                    )
+                }
+                <View>
                     <Text style={{color: 'red', fontWeight: 'bold', marginLeft: 10}}>{data.price}tr/m2
                         - {data.acreage}m2 </Text>
                 </View>

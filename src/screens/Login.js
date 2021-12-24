@@ -12,7 +12,7 @@ import { theme } from '../core/theme'
 import { userValidator } from '../helpers/userValidator'
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { passwordValidator } from '../helpers/passwordValidator'
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from "react-redux";
 import { createStore } from 'redux'
 import userReducers from "./../state/reducers/userReducers";
