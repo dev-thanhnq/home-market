@@ -4,14 +4,16 @@ import { Card, Button } from "../components";
 import nowTheme from "../constants/Theme";
 const { width } = Dimensions.get("screen");
 import React, {useState, Component, useEffect} from 'react';
+import { useIsFocused } from '@react-navigation/native';
 
 const MyPost = () => {
+    const isFocused = useIsFocused();
     const [homeData, setHomeData] = useState({value: []});
     const [page, setPage] = useState({value: 1});
     const [loading, setLoading] = useState({value: false});
     useEffect(() => {
         getHOmeData(1)
-    }, [])
+    }, [isFocused])
 
     const getHOmeData = async (currentPage) => {
         console.log("curentPage", currentPage)

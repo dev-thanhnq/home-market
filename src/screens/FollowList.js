@@ -4,12 +4,14 @@ import { Card, Button } from "../components";
 import nowTheme from "../constants/Theme";
 const { width } = Dimensions.get("screen");
 import React, {useState, Component, useEffect} from 'react';
+import { useIsFocused } from '@react-navigation/native';
 
 const FollowList = () => {
+    const isFocused = useIsFocused();
     const [homeData, setHomeData] = useState({value: []});
     useEffect(() => {
         getHOmeData()
-    }, [])
+    }, [isFocused])
 
     const getHOmeData = async () => {
         await fetch("http://47.254.253.64:5000/api/posts/follow",{
@@ -21,7 +23,7 @@ const FollowList = () => {
             .then(response => response.json())
             .then(result => {
                 setHomeData({ value: result.followed_posts })
-                console.log('__________________________________follow')
+                console.log('__________________________________follow-1')
             })
             .catch(error => console.log('error', error));
     }

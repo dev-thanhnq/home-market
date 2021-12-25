@@ -21,6 +21,7 @@ import { connect } from "react-redux";
 import { createStore } from 'redux'
 import userReducers from "./../state/reducers/userReducers";
 import * as ImagePicker from 'expo-image-picker';
+import { useIsFocused } from '@react-navigation/native';
 
 const store = createStore(userReducers)
 
@@ -37,10 +38,11 @@ const LoginScreen = ({ navigation }) => {
   const [islogin, setIslogin] = useState({ value: false })
   const [name, setName] = useState({ value: ''})
   const [loading, setLoading] = useState({ value: false})
+    const isFocused = useIsFocused();
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, [isFocused])
 
   const onUpdate = async () => {
     const emailError = emailValidator(email.value)

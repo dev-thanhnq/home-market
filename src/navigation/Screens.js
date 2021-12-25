@@ -201,7 +201,6 @@ function HomeStack(props) {
                                   <Header
                                       title=""
                                       back
-                                      white
                                       transparent
                                       navigation={navigation}
                                       scene={scene}
@@ -239,7 +238,6 @@ function FollowStack(props) {
                       header: ({navigation, scene}) => (
                           <Header
                               title="Bài viết theo dõi"
-                              white
                               transparent
                               navigation={navigation}
                               scene={scene}
@@ -265,7 +263,6 @@ function MyPostStack(props) {
                       header: ({navigation, scene}) => (
                           <Header
                               title="Bài viết của tôi"
-                              white
                               transparent
                               navigation={navigation}
                               scene={scene}
