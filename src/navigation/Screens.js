@@ -309,10 +309,10 @@ function AppStack(props) {
             initialRouteName="Trang chủ"
         >
             <Drawer.Screen name="Trang chủ" component={HomeStack}/>
-            <Drawer.Screen name="Tài khoản" component={ProfileStack}/>
-            <Drawer.Screen name="Đăng nhập" component={LoginStack}/>
             <Drawer.Screen name="Bài viết theo dõi" component={FollowStack} />
             <Drawer.Screen name="Bài viết của tôi" component={MyPostStack} />
+            <Drawer.Screen name="Tài khoản" component={ProfileStack}/>
+            <Drawer.Screen name="Đăng nhập" component={LoginStack}/>
         </Drawer.Navigator>
     );
 }

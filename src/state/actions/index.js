@@ -1,7 +1,8 @@
 import { UPDATE_USER } from "./actionTypes";
 
-export const updateUser = () => {
+export const updateUser = (data) => {
     return {
-        type: UPDATE_USER,
+        data : data,
+        type: UPDATE_USER
     }
 }

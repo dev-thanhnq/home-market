@@ -56,14 +56,21 @@ class Card extends React.Component {
               >
                 {this.cutTitle(item.title, 40)}
               </Text>
-              {item.subtitle ? (
+              {item.sold ? (
                 <Block flex center>
                   <Text
-                    style={{ fontFamily: 'montserrat-regular' }}
-                    size={32}
-                    color={nowTheme.COLORS.BLACK}
+                    style={{
+                      fontFamily: 'montserrat-regular',
+                      borderBottomColor: "red",
+                      borderBottomWidth: 1,
+                      borderTopWidth: 1,
+                      borderTopColor: "red",
+                      textAlign: 'center',
+                      fontWeight: 'bold', }}
+                    size={16}
+                    color={'red'}
                   >
-                    {item.subtitle}
+                    Đã bán
                   </Text>
                 </Block>
               ) : (

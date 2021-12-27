@@ -13,7 +13,6 @@ import {inlineStyles} from "react-native-svg";
 const { width } = Dimensions.get("screen");
 import React, { useState, Component } from 'react';
 
-// const [page, setPage] = useState('1');
 class Home extends React.Component {
   state = {
     homeData: [],
@@ -27,7 +26,8 @@ class Home extends React.Component {
           { value: 'strawberry', label: 'Strawberry' },
           { value: 'vanilla', label: 'Vanilla' }
       ],
-      district: ''
+      district: '',
+      totalPage: '1'
   }
 
   async componentDidMount() {
@@ -58,6 +58,9 @@ class Home extends React.Component {
               .then(result => {
                   this.setState({
                       homeData: result["posts"]
+                  })
+                  this.setState({
+                      totalPage: result.paging.total_page
                   })
                   console.log('__________________________________1')
               })
@@ -105,17 +108,8 @@ class Home extends React.Component {
                         {previousPage}
                     </Button>
                 </Block>
-                <Block row>
-                    <TextInput
-                        textAlign={'center'}
-                        color="black"
-                        style={styles.searchPage}
-                        placeholder="Số trang"
-                        placeholderTextColor={'#8898AA'}
-                        value={this.state.page}
-                        // onChangeText={(page) => this.setState({page})}
-                        keyboardType='numeric'
-                    />
+                <Block row middle>
+                    <Text style={{width: '60%', textAlign: 'center'}}>{this.state.page}/{this.state.totalPage}</Text>
                 </Block>
                 <Block row>
                     <Button
@@ -260,12 +254,9 @@ class Home extends React.Component {
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={styles.articles}
               >
-                  {this.renderSearch()}
-                  {this.renderFilter()}
                   <Block flex style={styles.loading}>
                       <ActivityIndicator size="large" color="#ff5722" />
                   </Block>
-                  {this.renderFooter()}
               </ScrollView>
           </Block>
           // <Block style={styles.loading}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, Component, useEffect} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -18,8 +18,10 @@ import nowTheme from "../constants/Theme";
 import { connect } from "react-redux";
 import { createStore } from 'redux'
 import userReducers from "./../state/reducers/userReducers";
+import {useIsFocused} from "@react-navigation/native";
 
-const store = createStore(userReducers)
+// const store = createStore(userReducers)
+import helpers from "../../src/store/helper";
 
 const { width } = Dimensions.get("screen");
 
@@ -32,14 +34,26 @@ function CustomDrawerContent({
   ...rest
 }) {
   const insets = useSafeArea();
+  const isFocused = useIsFocused();
+  const [token, setToken] = useState("");
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('state', () => {
+      setToken(helpers.getStore())
+    });
+    return unsubscribe;
+  }, [navigation])
   const screens = [
     "Trang chủ",
+    "Bài viết theo dõi",
+    "Bài viết của tôi",
     "Tài khoản",
-      "Đăng nhập",
-      "Bài viết theo dõi",
-      "Bài viết của tôi"
   ];
-  return (
+  const screens2 = [
+    "Trang chủ",
+    "Đăng nhập"
+  ];
+
+  return token ? (
     <Block
       style={styles.container}
       forceInset={{ top: "always", horizontal: "never" }}
@@ -72,22 +86,52 @@ function CustomDrawerContent({
             style={{ borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10}}
           />
         </Block>
-          {
-            (store.getState()) ? (
-                null
-            ) : (
-                <Button title="Đăng xuất" onPress={(logout)}>Đăng xuất</Button>
-            )
-          }
+        <Button title="Đăng xuất" onPress={(logout)}>Đăng xuất</Button>
         </ScrollView>
       </Block>
     </Block>
+  ) : (
+      <Block
+          style={styles.container}
+          forceInset={{ top: "always", horizontal: "never" }}
+      >
+        <Block style={styles.header}>
+          <Image style={styles.logo} source={Images.Logo} />
+          <Block right style={styles.headerIcon}>
+            <Icon
+                name="align-left-22x"
+                family="NowExtra"
+                size={15}
+                color={"white"}
+            />
+          </Block>
+        </Block>
+        <Block flex style={{ paddingLeft: 8, paddingRight: 14 }}>
+          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+            {screens2.map((item, index) => {
+              return (
+                  <DrawerCustomItem
+                      title={item}
+                      key={index}
+                      navigation={navigation}
+                      focused={state.index === index ? true : false}
+                  />
+              );
+            })}
+            <Block flex style={{ marginTop: 24, marginVertical: 8, paddingHorizontal: 8 }}>
+              <Block
+                  style={{ borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10}}
+              />
+            </Block>
+          </ScrollView>
+        </Block>
+      </Block>
   );
 }
 
-const logout = ({navigation}) => {
-  console.log('menu:', store.getState())
-  store.dispatch(updateUser())
+const logout = () => {
+  helpers.updateState(updateUser())
+  // navigation.navigate("Home")
 }
 
 const updateUser = () => {

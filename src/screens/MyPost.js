@@ -5,6 +5,7 @@ import nowTheme from "../constants/Theme";
 const { width } = Dimensions.get("screen");
 import React, {useState, Component, useEffect} from 'react';
 import { useIsFocused } from '@react-navigation/native';
+import helpers from "../../src/store/helper";
 
 const MyPost = () => {
     const isFocused = useIsFocused();
@@ -16,12 +17,11 @@ const MyPost = () => {
     }, [isFocused])
 
     const getHOmeData = async (currentPage) => {
-        console.log("curentPage", currentPage)
         setLoading({value: true})
         await fetch("http://47.254.253.64:5000/api/posts/user?page" + currentPage.toString(),{
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0MDI3Njg3MywianRpIjoiMjk4MTk5NTQtNjRjNC00Yzg0LTg2YWQtOGMzZDU0NjUzNTU3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2NDAyNzY4NzMsImV4cCI6MTY0MDg4MTY3M30.c0l_LquPxzUlRYPBbCP48Zx_wBtfpQKZEcf0PF0Ub0g"
+                'Authorization': 'Bearer ' + helpers.getStore()
             }
         })
         .then(response => response.json())

@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    ScrollView
+    ScrollView, ActivityIndicator
 } from 'react-native'
 import {Ionicons, Feather, FontAwesome} from '@expo/vector-icons';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -20,8 +20,9 @@ import { createStore } from 'redux'
 import userReducers from "./../../state/reducers/userReducers";
 import {showMessage} from "react-native-flash-message";
 import ButtonCustom from '../../components/Button'
-
-const store = createStore(userReducers)
+import {Block} from "galio-framework";
+import { useIsFocused } from '@react-navigation/native';
+import helpers from "../../../src/store/helper";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -29,7 +30,12 @@ const detailScreen = ({navigation, route}) => {
     const [data, setData] = useState("");
     const {idPost} = route.params;
     useEffect(() => {
-        loadData()
+        if (!helpers.getStore()) {
+            navigation.navigate("Login")
+        } else {
+            loadData()
+        }
+
     }, [])
 
     const getUserId = async () => {
@@ -48,7 +54,7 @@ const detailScreen = ({navigation, route}) => {
             {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0MDI3Njg3MywianRpIjoiMjk4MTk5NTQtNjRjNC00Yzg0LTg2YWQtOGMzZDU0NjUzNTU3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2NDAyNzY4NzMsImV4cCI6MTY0MDg4MTY3M30.c0l_LquPxzUlRYPBbCP48Zx_wBtfpQKZEcf0PF0Ub0g"
+                    'Authorization': 'Bearer ' + helpers.getStore()
                 }
             })
             .then(res => res.json())
@@ -136,6 +142,26 @@ const detailScreen = ({navigation, route}) => {
                 </Text>
                 <View style={styles.fakeLine}></View>
                 {
+                    (data.sold) ? (
+                        <View>
+                            <Text
+                                style={{
+                                    padding: 4,
+                                    borderBottomColor: "red",
+                                    borderBottomWidth: 1,
+                                    borderTopWidth: 1,
+                                    borderTopColor: "red",
+                                    textAlign: 'center',
+                                    fontSize: 20,
+                                    fontWeight: 'bold',
+                                    color: 'red'
+                                }}>Đã bán</Text>
+                        </View>
+                    ) : (
+                        <View></View>
+                    )
+                }
+                {
                     (data.followed) ? (
                         <View style={{flexDirection: 'row', marginTop: 10}}>
                             <Ionicons onPress={deleteToFollowList} name="heart" size={24} color="red" style={styles.iconDecoration}/>
@@ -208,13 +234,16 @@ const detailScreen = ({navigation, route}) => {
 
             </ScrollView>
         </SafeAreaView>
-    ) : <Text>Fetching, Please wait....</Text>;
+    ) : <Block flex style={styles.loading}>
+        <ActivityIndicator size="large" color="#ff5722" />
+    </Block>;
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-
+        paddingRight: 10,
+        paddingLeft: 10
     },
     buttonDeatails: {
         height: 10,
@@ -246,7 +275,7 @@ const styles = StyleSheet.create({
     },
     boxUser: {
         flexDirection: 'row',
-        width: windowWidth * 0.95,
+        // width: windowWidth * 0.9,
         height: 100,
         marginTop: 10,
         borderColor: 'gray',
@@ -259,6 +288,10 @@ const styles = StyleSheet.create({
     iconCall: {
         marginLeft: windowWidth / 3,
         marginTop: 5
+    },
+    loading: {
+        marginTop: 50,
+        height: 400
     }
 });
 

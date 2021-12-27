@@ -13,13 +13,14 @@ import { userValidator } from '../helpers/userValidator'
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { passwordValidator } from '../helpers/passwordValidator'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { connect } from "react-redux";
+import * as actions from '../state/actions/index'
+import { connect, useDispatch, useSelector } from "react-redux";
 import { createStore } from 'redux'
 import userReducers from "./../state/reducers/userReducers";
-
-const store = createStore(userReducers)
+import helpers from "../../src/store/helper";
 
 function LoginScreen({ navigation }) {
+    // const dispatch = useDispatch()
   const [username, setUsername] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
     const [error, setError] = useState({ value: false})
@@ -50,7 +51,8 @@ function LoginScreen({ navigation }) {
               if (result.error) {
                   setError({ value: true });
               } else {
-                  store.dispatch(updateUser(result.token))
+                  helpers.updateState(updateUser(result.token))
+                  // store.dispatch(updateUser(result.token))
                   setUsername({value: ''});
                   setPassword({value: ''});
                   setError({ value: false });
@@ -60,7 +62,6 @@ function LoginScreen({ navigation }) {
                       message: "Đăng nhập thành công",
                       type: "success",
                   });
-                  saveToken(result.token)
                   navigation.navigate('Home');
               }
           })
@@ -98,7 +99,7 @@ function LoginScreen({ navigation }) {
         return token;
     }
 
-  return store.getState() === '' ? (
+  return (
       <Background>
           {
               (error.value) ? (
@@ -107,80 +108,40 @@ function LoginScreen({ navigation }) {
                   <Text></Text>
               )
           }
-          {
-              (!islogin.value) ? (
-                  <TextInput
-                      label="Tài khoản"
-                      returnKeyType="next"
-                      value={username.value}
-                      onChangeText={(text) => setUsername({ value: text, error: '' })}
-                      error={!!username.error}
-                      errorText={username.error}
-                      autoCapitalize="none"
-                  />
-              ) : (
-                  <Text style={styles.nameStyle}>
-                      {name.value}
-                  </Text>
-
-              )
-          }
-          {
-              (!islogin.value) ? (
-                  <TextInput
-                      label="Mật khẩu"
-                      returnKeyType="done"
-                      value={password.value}
-                      onChangeText={(text) => setPassword({ value: text, error: '' })}
-                      error={!!password.error}
-                      errorText={password.error}
-                      secureTextEntry
-                  />
-              ) : (
-                  null
-              )
-          }
-          {
-              (!islogin.value) ? (
-                  <View style={styles.forgotPassword}>
-                      <TouchableOpacity
-                          onPress={() => navigation.navigate('ForgotPassword')}
-                      >
-                          <Text style={styles.forgot}>Quên mật khẩu?</Text>
-                      </TouchableOpacity>
-                  </View>
-              ) : (
-                  null
-              )
-          }
-          {
-              (!islogin.value) ? (
-                  <Button mode="contained" onPress={onLoginPressed}>
-                      Đăng nhập
-                  </Button>
-              ) : (
-                  null
-              )
-          }
-
-          {
-              (!islogin.value) ? (
-                  <View style={styles.row}>
-                      <Text>Bạn chưa có tài khoản? </Text>
-                      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                          <Text style={styles.link}>Đăng ký</Text>
-                      </TouchableOpacity>
-                  </View>
-              ) : (
-                  null
-              )
-          }
-      </Background>
-  ) : (
-      <Background>
-          <Text style={styles.nameStyle}>
-              {name.value}
-          </Text>
+          <TextInput
+              label="Tài khoản"
+              returnKeyType="next"
+              value={username.value}
+              onChangeText={(text) => setUsername({ value: text, error: '' })}
+              error={!!username.error}
+              errorText={username.error}
+              autoCapitalize="none"
+          />
+          <TextInput
+              label="Mật khẩu"
+              returnKeyType="done"
+              value={password.value}
+              onChangeText={(text) => setPassword({ value: text, error: '' })}
+              error={!!password.error}
+              errorText={password.error}
+              secureTextEntry
+          />
+          <View style={styles.forgotPassword}>
+              <TouchableOpacity
+                  onPress={() => navigation.navigate('ForgotPassword')}
+              >
+                  <Text style={styles.forgot}>Quên mật khẩu?</Text>
+              </TouchableOpacity>
+          </View>
+          <Button mode="contained" onPress={onLoginPressed}>
+              Đăng nhập
+          </Button>
+          <View style={styles.row}>
+              <Text>Bạn chưa có tài khoản? </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                  <Text style={styles.link}>Đăng ký</Text>
+              </TouchableOpacity>
+          </View>
       </Background>
   )
 }
@@ -222,4 +183,12 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(LoginScreen)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onUpdateToken: (token) => {
+            dispatch(actions.updateUser(token))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)

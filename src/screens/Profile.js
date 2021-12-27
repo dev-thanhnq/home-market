@@ -16,12 +16,14 @@ import { showMessage, hideMessage } from "react-native-flash-message";
 import { passwordValidator } from '../helpers/passwordValidator'
 import { confirmPassValidator } from '../helpers/confirmPassValidator.js'
 import { passwordUpdateValidator } from "../helpers/passwordUpdateValidator";
+import { phoneValidator } from '../helpers/phoneValidator'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from "react-redux";
 import { createStore } from 'redux'
 import userReducers from "./../state/reducers/userReducers";
 import * as ImagePicker from 'expo-image-picker';
 import { useIsFocused } from '@react-navigation/native';
+import helpers from "../../src/store/helper";
 
 const store = createStore(userReducers)
 
@@ -45,9 +47,11 @@ const LoginScreen = ({ navigation }) => {
   }, [isFocused])
 
   const onUpdate = async () => {
+      console.log(email.value)
+      console.log(phone.value)
     const emailError = emailValidator(email.value)
     const fullnameError = nameValidator(fullname.value)
-    const phoneError = nameValidator(phone.value)
+    const phoneError = phoneValidator(phone.value)
     const passwordError = passwordUpdateValidator(password.value)
     const newpasswordError = passwordUpdateValidator(newpassword.value)
     const confirmError = confirmPassValidator(confirm.value, newpassword.value)
@@ -82,7 +86,7 @@ const LoginScreen = ({ navigation }) => {
       method: 'PUT',
       redirect: 'follow',
       headers: {
-        'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzOTgwMDIzOSwianRpIjoiMmE0NzVjMTMtMTNmOS00NGVlLWJjOGItNTJmMWMxYjVkOTk5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2Mzk4MDAyMzksImV4cCI6MTY0MDQwNTAzOX0.q_DEVnjaYw4-SRaCQGW7E9OvP9wYlzWfYr-dfkEoHtA'
+        'Authorization': 'Bearer ' + helpers.getStore()
       },
       body: formdata
     };
@@ -128,7 +132,7 @@ const LoginScreen = ({ navigation }) => {
         {
           method: 'GET',
           headers: {
-            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzOTgwMDIzOSwianRpIjoiMmE0NzVjMTMtMTNmOS00NGVlLWJjOGItNTJmMWMxYjVkOTk5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2Mzk4MDAyMzksImV4cCI6MTY0MDQwNTAzOX0.q_DEVnjaYw4-SRaCQGW7E9OvP9wYlzWfYr-dfkEoHtA'
+            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0MDQyMzk5OSwianRpIjoiOTRhMjQwMzQtNzk5OS00NTk4LWEyZTMtYjkwNmFmNWY0NmNjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2NDA0MjM5OTksImV4cCI6MTY0MTAyODc5OX0.-FqtqJ-Qj0bWoBcvVvcZZ-nAiN_lIBv2vcwLzv25j44'
           }
         })
         .then(res => res.json())

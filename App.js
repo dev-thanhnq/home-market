@@ -10,10 +10,12 @@ import FlashMessage from "react-native-flash-message";
 import Screens from './src/navigation/Screens';
 import { Images, articles, nowTheme } from './src/constants';
 import { Provider } from 'react-redux'
+import helpers from "./src/store/helper";
 import { createStore } from 'redux'
-import allReducers from "./src/state/reducers";
+import userReducers from "./src/state/reducers/userReducers";
 
-const store = createStore(allReducers)
+let store = createStore(userReducers)
+helpers.setStore(store);
 
 // cache app images
 const assetImages = [
