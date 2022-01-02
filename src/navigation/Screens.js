@@ -1,56 +1,30 @@
 import React from 'react';
-import {Block} from "galio-framework";
 import {Easing, Animated, Dimensions} from "react-native";
 import {createStackNavigator} from "@react-navigation/stack";
 import {createDrawerNavigator} from "@react-navigation/drawer";
-import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 // screens
 import Home from '../screens/Home';
 import Pro from '../screens/Pro';
-import Profile from '../screens/Profile';
-import Components from '../screens/Components';
-import Articles from '../screens/Articles';
-import Onboarding from '../screens/Onboarding';
-import SettingsScreen from '../screens/Settings';
-import Login from "../screens/Login";
-import Register from "../screens/Register";
+import Profile from '../screens/auth/Profile';
+import Login from "../screens/auth/Login";
+import Register from "../screens/auth/Register";
 import DetailScreens from "../screens/DetailScreens/DetailScreen"
-import FollowList from "../screens/FollowList"
-import MyPost from "../screens/MyPost"
+import FollowList from "../screens/post/FollowList"
+import MyPost from "../screens/post/MyPost"
 // drawer
 import CustomDrawerContent from "./Menu";
 // header for screens
 import {Header, Icon} from '../components';
 import {nowTheme, tabs} from "../constants";
-import ForgotPassword from "../screens/ForgotPassword";
+import ForgotPassword from "../screens/auth/ForgotPassword";
 import mapView from "../screens/MapView/MapView";
+import Logout from "../screens/auth/Logout";
+import CreatePost from "../screens/post/CreatePost";
 
 const {width} = Dimensions.get("screen");
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-
-function ComponentsStack(props) {
-    return (
-        <Stack.Navigator initialRouteName="Components" mode="card" headerMode="screen">
-            <Stack.Screen name="Components" component={Components} options={{
-                header: ({navigation, scene}) => (<Header title="Theo dõi" navigation={navigation} scene={scene}/>),
-                backgroundColor: "#FFFFFF"
-            }}/>
-        </Stack.Navigator>
-    );
-}
-
-function ArticlesStack(props) {
-    return (
-        <Stack.Navigator initialRouteName="Articles" mode="card" headerMode="screen">
-            <Stack.Screen name="Articles" component={Articles} options={{
-                header: ({navigation, scene}) => (<Header title="Articles" navigation={navigation} scene={scene}/>),
-                backgroundColor: '#FFFFFF'
-            }}/>
-        </Stack.Navigator>
-    );
-}
 
 function LoginStack(props) {
     return (
@@ -188,7 +162,7 @@ function HomeStack(props) {
                     headerTransparent: true
                 }}
             />
-            <Stack.Screen name="detailsScreen"
+            <Stack.Screen name="Chi tiết bài viết"
                           component={DetailScreens}
             />
             <Stack.Screen name="mapView"
@@ -249,6 +223,9 @@ function FollowStack(props) {
             <Stack.Screen name="detailsScreen"
                           component={DetailScreens}
             />
+            <Stack.Screen name="mapView"
+                          component={mapView}
+            />
         </Stack.Navigator>
     );
 }
@@ -272,6 +249,62 @@ function MyPostStack(props) {
             />
             <Stack.Screen name="detailsScreen"
                           component={DetailScreens}
+            />
+            <Stack.Screen name="mapView"
+                          component={mapView}
+            />
+            <Stack.Screen name="CreatePost"
+                          component={CreatePost}
+                          options={{
+                              header: ({navigation, scene}) => (
+                                  <Header
+                                      title="Thêm mới bài viết"
+                                      back
+                                      transparent
+                                      navigation={navigation}
+                                      scene={scene}
+                                  />
+                              ),
+                          }}
+
+
+            />
+        </Stack.Navigator>
+    );
+}
+
+function LogoutStack(props) {
+    return (
+        <Stack.Navigator initialRouteName="Logout" mode="card" headerMode="screen">
+            <Stack.Screen
+                name="Logout"
+                component={Logout}
+                options={{
+                    header: ({navigation, scene}) => (
+                        <Header
+                            title="Đang đăng xuất"
+                            transparent
+                            navigation={navigation}
+                            scene={scene}
+                        />
+                    ),
+                }}
+            />
+            <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{
+                    header: ({navigation, scene}) => (
+                        <Header
+                            title="Trang chủ"
+                            search
+                            options
+                            navigation={navigation}
+                            scene={scene}
+                        />
+                    ),
+                    cardStyle: {backgroundColor: "#FFFFFF"}
+                }}
             />
         </Stack.Navigator>
     );
@@ -313,6 +346,7 @@ function AppStack(props) {
             <Drawer.Screen name="Bài viết của tôi" component={MyPostStack} />
             <Drawer.Screen name="Tài khoản" component={ProfileStack}/>
             <Drawer.Screen name="Đăng nhập" component={LoginStack}/>
+            <Drawer.Screen name="Đăng xuất" component={LogoutStack}/>
         </Drawer.Navigator>
     );
 }

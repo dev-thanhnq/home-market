@@ -1,29 +1,29 @@
 import React, {useEffect, useState} from 'react'
 import {TouchableOpacity, StyleSheet, View, Image, ScrollView, ActivityIndicator} from 'react-native'
 import { Text } from 'react-native-paper'
-import Background from '../components/Background'
+import Background from '../../components/Background'
 import { Block } from "galio-framework";
 // import Logo from '../components/Logo'
 // import Header from '../components/Header'
-import Button from '../components/Button'
-import TextInput from '../components/TextInput'
-import BackButton from '../components/BackButton'
-import { theme } from '../core/theme'
-import { userValidator } from '../helpers/userValidator'
-import { emailValidator } from "../helpers/emailValidator";
-import { nameValidator } from "../helpers/nameValidator";
+import Button from '../../components/Button'
+import TextInput from '../../components/TextInput'
+import BackButton from '../../components/BackButton'
+import { theme } from '../../core/theme'
+import { userValidator } from '../../helpers/userValidator'
+import { emailValidator } from "../../helpers/emailValidator";
+import { nameValidator } from "../../helpers/nameValidator";
 import { showMessage, hideMessage } from "react-native-flash-message";
-import { passwordValidator } from '../helpers/passwordValidator'
-import { confirmPassValidator } from '../helpers/confirmPassValidator.js'
-import { passwordUpdateValidator } from "../helpers/passwordUpdateValidator";
-import { phoneValidator } from '../helpers/phoneValidator'
+import { passwordValidator } from '../../helpers/passwordValidator'
+import { confirmPassValidator } from '../../helpers/confirmPassValidator.js'
+import { passwordUpdateValidator } from "../../helpers/passwordUpdateValidator";
+import { phoneValidator } from '../../helpers/phoneValidator'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from "react-redux";
 import { createStore } from 'redux'
-import userReducers from "./../state/reducers/userReducers";
+import userReducers from "../../state/reducers/userReducers";
 import * as ImagePicker from 'expo-image-picker';
 import { useIsFocused } from '@react-navigation/native';
-import helpers from "../../src/store/helper";
+import helpers from "../../store/helper";
 
 const store = createStore(userReducers)
 
@@ -209,7 +209,7 @@ const LoginScreen = ({ navigation }) => {
             <Block style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Image
                   style={{width: 150, height: 150, borderRadius: 75}}
-                  source={require('../../assets/imgs/user.png')}
+                  source={require('../../../assets/imgs/user.png')}
               />
             </Block>
           ) : (

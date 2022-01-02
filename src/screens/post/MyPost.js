@@ -1,13 +1,13 @@
 import { StyleSheet, Dimensions, ScrollView, ActivityIndicator, FlatList, TouchableOpacity, TextInput } from "react-native";
 import { Block, theme, Text, Radio } from "galio-framework";
-import { Card, Button } from "../components";
-import nowTheme from "../constants/Theme";
+import { Card, Button } from "../../components";
+import nowTheme from "../../constants/Theme";
 const { width } = Dimensions.get("screen");
 import React, {useState, Component, useEffect} from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import helpers from "../../src/store/helper";
+import helpers from "../../store/helper";
 
-const MyPost = () => {
+const MyPost = ({navigation}) => {
     const isFocused = useIsFocused();
     const [homeData, setHomeData] = useState({value: []});
     const [page, setPage] = useState({value: 1});
@@ -82,12 +82,19 @@ const MyPost = () => {
         }
     }
 
+    const addPost = () => {
+        navigation.navigate("CreatePost")
+    }
+
     return !loading.value ? (
             <Block flex center style={styles.home}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.articles}
                 >
+                    <Block row middle>
+                        <Button onPress={addPost}>Thêm mới</Button>
+                    </Block>
                     <Block flex>
                         {
                             (homeData.value.length > 0) ? (

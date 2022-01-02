@@ -207,26 +207,25 @@ const detailScreen = ({navigation, route}) => {
                     <Text style={styles.textDecoration}>Toilet : {data.toilet}</Text>
                 </View>
                 <View style={styles.fakeLine}></View>
-                <View style={styles.boxUser}>
-                    <View style={{flexDirection: 'row', marginTop: 5}}>
-                        <View>
-                            <Image source={{uri: data.user.avatar}} style={styles.iconUser}/>
+                {
+                    (data.sold) ? (
+                        <View></View>
+                    ) : (
+                        <View style={styles.boxUser}>
+                            <View style={{flexDirection: 'row', marginTop: 5}}>
+                                <View>
+                                    <Image source={{uri: data.user.avatar}} style={styles.iconUser}/>
+                                </View>
+                                <View style={{marginTop: 8, marginLeft: 10}}>
+                                    <Text>{data.user.fullname}</Text>
+                                    <Text>{data.user.phone}</Text>
+                                    <Text>{data.user.email}</Text>
+                                    <Text>{data.user.address}</Text>
+                                </View>
+                            </View>
                         </View>
-                        <View style={{marginTop: 8, marginLeft: 10}}>
-                            <Text>{data.user.fullname}</Text>
-                            <Text>{data.user.phone}</Text>
-                            <Text>{data.user.email}</Text>
-                            <Text>{data.user.address}</Text>
-                        </View>
-                    </View>
-                    {/*<TouchableOpacity*/}
-                    {/*    style={{marginTop: 10, flexDirection: 'column'}}*/}
-                    {/*    onPress={() => makeCall(data.user.phone)}*/}
-                    {/*>*/}
-                    {/*    <Feather name="phone" size={28} color="green" style={styles.iconCall}/>*/}
-
-                    {/*</TouchableOpacity>*/}
-                </View>
+                    )
+                }
                     <Text style={{marginBottom:10, fontWeight:"bold"}}>Thông tin chi tiết :</Text>
                     <Text style={{marginLeft:5, marginRight:5}}>{data.description}</Text>
                 <View style={styles.fakeLine}></View>

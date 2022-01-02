@@ -1,11 +1,11 @@
 import { StyleSheet, Dimensions, ScrollView, ActivityIndicator, FlatList, TouchableOpacity, TextInput } from "react-native";
 import { Block, theme, Text, Radio } from "galio-framework";
-import { Card, Button } from "../components";
-import nowTheme from "../constants/Theme";
+import { Card, Button } from "../../components";
+import nowTheme from "../../constants/Theme";
 const { width } = Dimensions.get("screen");
 import React, {useState, Component, useEffect} from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import helpers from "../../src/store/helper";
+import helpers from "../../store/helper";
 
 const FollowList = () => {
     const isFocused = useIsFocused();

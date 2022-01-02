@@ -47,6 +47,7 @@ function CustomDrawerContent({
     "Bài viết theo dõi",
     "Bài viết của tôi",
     "Tài khoản",
+    "Đăng xuất"
   ];
   const screens2 = [
     "Trang chủ",
