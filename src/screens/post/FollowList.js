@@ -34,7 +34,7 @@ const FollowList = () => {
             });
     }
 
-    return homeData.value.length > 0 ? (
+    return !loading ? (
         <Block flex center style={styles.home}>
             <ScrollView
                 showsVerticalScrollIndicator={false}

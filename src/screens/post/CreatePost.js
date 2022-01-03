@@ -89,14 +89,20 @@ const CreatePost = ({navigation}) => {
             formData.append('bedroom', bedroom.value)
             formData.append('lat', place.latitude)
             formData.append('long', place.longitude)
+            let imagesString = ""
             for (let i = 0; i < images.length; i++) {
-                formData.append('images', images[i])
+                imagesString += images[i]
+                if (i+1 < images.length) {
+                    imagesString += ","
+                }
             }
+            formData.append('images', imagesString)
+            console.log(formData)
             let requestOptions = {
                 method: 'POST',
                 redirect: 'follow',
                 headers: {
-                    // 'content-type': 'multipart/form-data',
+                    'content-type': 'multipart/form-data',
                     'Authorization': 'Bearer ' + helpers.getStore()
                 },
                 body: formData
@@ -472,13 +478,6 @@ const CreatePost = ({navigation}) => {
                 }
                 <Text style={{marginLeft: 20}}>Mô tả</Text>
                 <Block row center>
-                    {/*<TextInput*/}
-                    {/*    style={styles.searchArea}*/}
-                    {/*    multiline = {true}*/}
-                    {/*    numberOfLines = {5}*/}
-                    {/*    value={description.value}*/}
-                    {/*    onChangeText={(value) => setDescription({value: value, error: ''})}*/}
-                    {/*/>*/}
                     <Textarea
                         containerStyle={styles.textareaContainer}
                         style={styles.textarea}

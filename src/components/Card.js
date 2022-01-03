@@ -110,7 +110,7 @@ class Card extends React.Component {
                 muted={!ctaColor}
                 color={ctaColor || nowTheme.COLORS.ACTIVE}
                 bold
-                onPress={() => navigation.navigate('detailsScreen',{idPost: item.post_id})}
+                onPress={() => navigation.navigate('Chi tiết bài viết',{idPost: item.post_id})}
               >
                 Xem chi tiết
               </Text>

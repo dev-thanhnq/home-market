@@ -5,13 +5,15 @@ import { Card, Button } from "../components";
 import articles from "../constants/articles";
 import district from "../constants/district";
 import {View} from "react-native-reanimated";
-import RNPickerSelect from 'react-native-picker-select';
+// import RNPickerSelect from 'react-native-picker-select';
 import Icon from "../components/Icon";
 import Input from "../components/Input";
 import nowTheme from "../constants/Theme";
 import {inlineStyles} from "react-native-svg";
 const { width } = Dimensions.get("screen");
 import React, { useState, Component } from 'react';
+import {FontAwesome} from "@expo/vector-icons";
+import SelectDropdown from "react-native-select-dropdown";
 
 class Home extends React.Component {
   state = {
@@ -167,12 +169,31 @@ class Home extends React.Component {
                       </Block>
                   </Block>
                   <Block style={{width: 220, paddingLeft: 14}}>
-                      <RNPickerSelect
-                          useNativeAndroidPickerStyle={false}
-                          onValueChange={(value) => this.setState({district: value})}
-                          items={district}
-                          value={this.state.district}
-                          fixAndroidTouchableBug={true}
+                      <SelectDropdown
+                          data={district}
+                          onSelect={(selectedItem, index) => this.setState({district: selectedItem})}
+                          defaultButtonText={"Chọn Quận, Huyện"}
+                          buttonTextAfterSelection={(selectedItem, index) => {
+                              return selectedItem;
+                          }}
+                          rowTextForSelection={(item, index) => {
+                              return item;
+                          }}
+                          buttonStyle={styles.dropdown1BtnStyle}
+                          buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                          renderDropdownIcon={(isOpened) => {
+                              return (
+                                  <FontAwesome
+                                      name={isOpened ? "chevron-up" : "chevron-down"}
+                                      color={"#444"}
+                                      size={18}
+                                  />
+                              );
+                          }}
+                          dropdownIconPosition={"right"}
+                          dropdownStyle={styles.dropdown1DropdownStyle}
+                          rowStyle={styles.dropdown1RowStyle}
+                          rowTextStyle={styles.dropdown1RowTxtStyle}
                       />
                   </Block>
                   <Block middle>
@@ -259,9 +280,6 @@ class Home extends React.Component {
                   </Block>
               </ScrollView>
           </Block>
-          // <Block style={styles.loading}>
-          //   <ActivityIndicator size="large" color="#ff5722" />
-          // </Block>
       )
     }
   }
@@ -343,7 +361,24 @@ const styles = StyleSheet.create({
     loading: {
       marginTop: 50,
       height: 400
-    }
+    },
+    dropdown1BtnStyle: {
+        width: "70%",
+        height: 40,
+        backgroundColor: "#FFF",
+        borderWidth: 1,
+        borderRadius: 30,
+        borderColor: nowTheme.COLORS.BORDER,
+        marginTop: 7,
+        marginBottom: 7,
+    },
+    dropdown1BtnTxtStyle: { color: "#444", textAlign: "left" },
+    dropdown1DropdownStyle: { backgroundColor: "#EFEFEF" },
+    dropdown1RowStyle: {
+        backgroundColor: "#EFEFEF",
+        borderBottomColor: "#C5C5C5",
+    },
+    dropdown1RowTxtStyle: { color: "#444", textAlign: "left" },
 });
 
 export default Home;
