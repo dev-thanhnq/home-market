@@ -220,7 +220,7 @@ function FollowStack(props) {
                       // headerTransparent: true
                   }}
             />
-            <Stack.Screen name="detailsScreen"
+            <Stack.Screen name="Chi tiết bài viết"
                           component={DetailScreens}
             />
             <Stack.Screen name="mapView"
@@ -234,7 +234,7 @@ function MyPostStack(props) {
     return (
         <Stack.Navigator initialRouteName="MyPost" mode="card" headerMode="screen">
             <Stack.Screen
-                  name="FollowList"
+                  name="MyPost"
                   component={MyPost}
                   options={{
                       header: ({navigation, scene}) => (
@@ -247,7 +247,7 @@ function MyPostStack(props) {
                       ),
                   }}
             />
-            <Stack.Screen name="detailsScreen"
+            <Stack.Screen name="Chi tiết bài viết"
                           component={DetailScreens}
             />
             <Stack.Screen name="mapView"
@@ -288,22 +288,6 @@ function LogoutStack(props) {
                             scene={scene}
                         />
                     ),
-                }}
-            />
-            <Stack.Screen
-                name="Home"
-                component={Home}
-                options={{
-                    header: ({navigation, scene}) => (
-                        <Header
-                            title="Trang chủ"
-                            search
-                            options
-                            navigation={navigation}
-                            scene={scene}
-                        />
-                    ),
-                    cardStyle: {backgroundColor: "#FFFFFF"}
                 }}
             />
         </Stack.Navigator>

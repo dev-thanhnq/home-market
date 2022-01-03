@@ -87,7 +87,6 @@ function CustomDrawerContent({
             style={{ borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10}}
           />
         </Block>
-        <Button title="Đăng xuất" onPress={(logout)}>Đăng xuất</Button>
         </ScrollView>
       </Block>
     </Block>

@@ -38,17 +38,6 @@ const detailScreen = ({navigation, route}) => {
 
     }, [])
 
-    const getUserId = async () => {
-        let token = '';
-        try {
-            token = await AsyncStorage.getItem('token') || '';
-        } catch (error) {
-            // Error retrieving data
-            console.log(error.message);
-        }
-        return token;
-    }
-
     const loadData = async () => {
         await fetch('http://47.254.253.64:5000/api/post/' + idPost,
             {
@@ -60,6 +49,7 @@ const detailScreen = ({navigation, route}) => {
             .then(res => res.json())
             .then(data => {
                 setData(data)
+                console.log(data)
             })
             .catch(error => {
                 console.log('Error', error.message);
@@ -80,7 +70,7 @@ const detailScreen = ({navigation, route}) => {
            {
                method: 'POST',
                headers: {
-                   'Authorization': 'Bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0MDI3Njg3MywianRpIjoiMjk4MTk5NTQtNjRjNC00Yzg0LTg2YWQtOGMzZDU0NjUzNTU3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2NDAyNzY4NzMsImV4cCI6MTY0MDg4MTY3M30.c0l_LquPxzUlRYPBbCP48Zx_wBtfpQKZEcf0PF0Ub0g"
+                   'Authorization': 'Bearer ' + helpers.getStore()
                }
            })
            .then(res => res.json())
@@ -109,7 +99,7 @@ const detailScreen = ({navigation, route}) => {
             {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': 'Bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0MDI3Njg3MywianRpIjoiMjk4MTk5NTQtNjRjNC00Yzg0LTg2YWQtOGMzZDU0NjUzNTU3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2NDAyNzY4NzMsImV4cCI6MTY0MDg4MTY3M30.c0l_LquPxzUlRYPBbCP48Zx_wBtfpQKZEcf0PF0Ub0g"
+                    'Authorization': 'Bearer ' + helpers.getStore()
                 }
             })
             .then(res => res.json())

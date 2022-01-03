@@ -6,7 +6,7 @@ const { width } = Dimensions.get("screen");
 import helpers from "../../store/helper";
 import {showMessage} from "react-native-flash-message";
 
-export default function ForgotPassword({ navigation }) {
+const Logout = ({ navigation }) => {
     const isFocused = useIsFocused();
     useEffect(() => {
         helpers.updateState(updateUser())
@@ -14,13 +14,16 @@ export default function ForgotPassword({ navigation }) {
             message: "Đăng xuất thành công",
             type: "success",
         });
-        navigation.navigate("Home")
+        logout()
     }, [isFocused])
     const updateUser = () => {
         return {
             data: '',
             type: 'UPDATE_USER',
         }
+    }
+    const logout = () => {
+        navigation.navigate("Home")
     }
     return (
         <Block flex center style={styles.home}>
@@ -52,3 +55,5 @@ const styles = StyleSheet.create({
         height: 400
     }
 })
+
+export default Logout

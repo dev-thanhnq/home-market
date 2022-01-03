@@ -10,11 +10,13 @@ import helpers from "../../store/helper";
 const FollowList = () => {
     const isFocused = useIsFocused();
     const [homeData, setHomeData] = useState({value: []});
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         getHOmeData()
     }, [isFocused])
 
     const getHOmeData = async () => {
+        setLoading(true)
         await fetch("http://47.254.253.64:5000/api/posts/follow",{
             method: 'GET',
             headers: {
@@ -24,9 +26,12 @@ const FollowList = () => {
             .then(response => response.json())
             .then(result => {
                 setHomeData({ value: result.followed_posts })
+                setLoading(false)
                 console.log('__________________________________follow-1')
             })
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                setLoading(false)
+            });
     }
 
     return homeData.value.length > 0 ? (
@@ -37,7 +42,14 @@ const FollowList = () => {
             >
                 <Block flex>
                     {
-                        homeData.value.map(item => <Card item={item} key={item.post_id} horizontal/>)
+                        (homeData.value.length > 0) ? (
+                            homeData.value.map(item => <Card item={item} key={item.post_id} horizontal/>)
+                        ) : (
+                            <Block flex style={styles.loading}>
+                                <Text style={{textAlign: 'center'}}>Không có dữ liệu</Text>
+
+                            </Block>
+                        )
                     }
                 </Block>
             </ScrollView>

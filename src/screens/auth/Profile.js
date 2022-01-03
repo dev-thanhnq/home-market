@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import {TouchableOpacity, StyleSheet, View, Image, ScrollView, ActivityIndicator} from 'react-native'
+import {TouchableOpacity, StyleSheet, View, Image, ScrollView, ActivityIndicator, Modal, Dimensions} from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../../components/Background'
 import { Block } from "galio-framework";
-// import Logo from '../components/Logo'
-// import Header from '../components/Header'
 import Button from '../../components/Button'
 import TextInput from '../../components/TextInput'
 import BackButton from '../../components/BackButton'
@@ -25,8 +23,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { useIsFocused } from '@react-navigation/native';
 import helpers from "../../store/helper";
 
-const store = createStore(userReducers)
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState({ value: '', error: '' })
   const [fullname, setFullname] = useState({ value: '', error: '' })
@@ -40,15 +39,21 @@ const LoginScreen = ({ navigation }) => {
   const [islogin, setIslogin] = useState({ value: false })
   const [name, setName] = useState({ value: ''})
   const [loading, setLoading] = useState({ value: false})
+  const [modal, setModal] = useState(false)
+    const [passwordUser, setPasswordUser] = useState({ value: '', error: '' })
+    const [passwordCon, setPasswordCon] = useState({ value: '', error: '' })
+    const [username, setUsername] = useState({ value: '', error: '' })
     const isFocused = useIsFocused();
 
   useEffect(() => {
-    loadData()
+      if (!helpers.getStore()) {
+          navigation.navigate("Home")
+      } else {
+          loadData()
+      }
   }, [isFocused])
 
   const onUpdate = async () => {
-      console.log(email.value)
-      console.log(phone.value)
     const emailError = emailValidator(email.value)
     const fullnameError = nameValidator(fullname.value)
     const phoneError = phoneValidator(phone.value)
@@ -104,7 +109,6 @@ const LoginScreen = ({ navigation }) => {
               type: "danger",
             });
           } else {
-            console.log(result)
             setName({ value: result.user.username, error: '' })
             setEmail({ value: result.user.email, error: '' })
             setFullname({ value: result.user.fullname, error: '' })
@@ -132,7 +136,7 @@ const LoginScreen = ({ navigation }) => {
         {
           method: 'GET',
           headers: {
-            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0MDQyMzk5OSwianRpIjoiOTRhMjQwMzQtNzk5OS00NTk4LWEyZTMtYjkwNmFmNWY0NmNjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2NDA0MjM5OTksImV4cCI6MTY0MTAyODc5OX0.-FqtqJ-Qj0bWoBcvVvcZZ-nAiN_lIBv2vcwLzv25j44'
+            'Authorization': 'Bearer ' + helpers.getStore()
           }
         })
         .then(res => res.json())
@@ -162,7 +166,6 @@ const LoginScreen = ({ navigation }) => {
         });
 
         if (!result.cancelled) {
-            console.log('uri', result.uri)
             // ImagePicker saves the taken photo to disk and returns a local URI to it
             let localUri = result.uri;
             let filename = localUri.split('/').pop();
@@ -180,7 +183,7 @@ const LoginScreen = ({ navigation }) => {
                 method: 'POST',
                 headers: {
                     'content-type': 'multipart/form-data',
-                    'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTYzOTkzNTI5MiwianRpIjoiMTAyYmI0ZjMtYTFmYi00MmZkLWFiZTAtZTE3NDI4ZTUyZTE5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE2Mzk5MzUyOTIsImV4cCI6MTY0MDU0MDA5Mn0.eVUFkkUFvC3tB7HSOClUmTwJeGj7hwI3Sztju_oX1ts'
+                    'Authorization': 'Bearer ' + helpers.getStore()
                 },
                 body: formdata
             };
@@ -201,9 +204,105 @@ const LoginScreen = ({ navigation }) => {
         }
     };
 
+    const updateUser = () => {
+        return {
+            data: '',
+            type: 'UPDATE_USER',
+        }
+    }
+
+  const deleteUser = async () => {
+      const usernameError = userValidator(username.value)
+      const passwordUserError = passwordValidator(passwordUser.value)
+      const passwordConError = confirmPassValidator(passwordCon.value, passwordUser.value)
+
+      if (usernameError || passwordConError || passwordUserError) {
+          setUsername({ ...username, error: usernameError })
+          setPasswordUser({ ...passwordUser, error: passwordUserError })
+          setPasswordCon({ ...passwordCon, error: passwordConError })
+          return
+      }
+
+      let formData = new FormData()
+      formData.append('username', username.value)
+      formData.append('current_password', passwordUser.value)
+      formData.append('confirmed', passwordCon.value)
+
+      let requestOptions = {
+          method: 'DELETE',
+          headers: {
+              'Authorization': 'Bearer ' + helpers.getStore()
+          },
+          body: formData
+      };
+
+      await fetch('http://47.254.253.64:5000/api/user',requestOptions)
+          .then(res => res.json())
+          .then(data => {
+              if (data.msg === "Account was deleted") {
+                  helpers.updateState(updateUser())
+                  setModal(false)
+                  navigation.navigate("Home")
+                  showMessage({
+                      message: "Xóa bài tài khoản thành công",
+                      type: "success",
+                  });
+              } else {
+                  showMessage({
+                      message: "Thất bại",
+                      type: "danger",
+                  });
+              }
+          })
+          .catch(error => {
+              console.log('Error', error.message);
+              throw error;
+          });
+  }
+
   return !loading.value ? (
       <Block  style={{marginTop: '27%', paddingLeft: 40, paddingRight: 40, textAlign: 'center'}}>
         <ScrollView style={{width: '100%'}} showsVerticalScrollIndicator={false}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modal}
+            >
+                <View style={styles.deleteModal}>
+                    <Text>Dữ liệu sẽ không thể phục hồi, bạn có muốn tiếp tục?</Text>
+                    <TextInput
+                        label="Tài khoản"
+                        returnKeyType="done"
+                        value={username.value}
+                        onChangeText={(text) => setUsername({ value: text, error: '' })}
+                        error={!!username.error}
+                        errorText={username.error}
+                        // secureTextEntry
+                    />
+                    <TextInput
+                        label="Mật khẩu"
+                        returnKeyType="done"
+                        value={passwordUser.value}
+                        onChangeText={(text) => setPasswordUser({ value: text, error: '' })}
+                        error={!!passwordUser.error}
+                        errorText={passwordUser.error}
+                        secureTextEntry
+                    />
+                    <TextInput
+                        label="Xác nhận mật khẩu"
+                        returnKeyType="done"
+                        value={passwordCon.value}
+                        onChangeText={(text) => setPasswordCon({ value: text, error: '' })}
+                        error={!!passwordCon.error}
+                        errorText={passwordCon.error}
+                        secureTextEntry
+                    />
+                    <Block row middle>
+                        <Button style={{width: 50, height: 30, backgroundColor: 'red'}} onPress={() => deleteUser()}>Xóa</Button>
+                        <Button style={{width: 70, height: 30, backgroundColor: '#1C8FDB'}} onPress={() =>setModal(false)}>Hủy</Button>
+                    </Block>
+                </View>
+            </Modal>
         {
           (!avatar.value) ? (
             <Block style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -300,7 +399,10 @@ const LoginScreen = ({ navigation }) => {
             errorText={confirm.error}
             secureTextEntry
         />
-        <Block style={{flex: 1, alignItems: 'flex-end', justifyContent: 'center'}}>
+        <Block row middle>
+          <Button mode="contained" onPress={() =>setModal(true)} style={{ marginBottom: 40, backgroundColor: 'red'}}>
+            Xóa tài khoản
+          </Button>
           <Button mode="contained" onPress={onUpdate} style={{ marginBottom: 40}}>
             Lưu
           </Button>
@@ -346,7 +448,16 @@ const styles = StyleSheet.create({
   loading: {
     marginTop: '40%',
     height: 200
-  }
+  },
+    deleteModal: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: windowWidth,
+        height: windowHeight - 200,
+        padding: 20
+    },
 })
 
 const mapStateToProps = (state) => {

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Dimensions, View, StyleSheet} from "react-native";
 import MapView, {Marker} from 'react-native-maps';
 
 const mapView = ({route}) => {
     const {latitude, longitude, title} = route.params;
-
+    const [place, setPlace] = useState()
     return (
         <View style={styles.container}>
             <MapView

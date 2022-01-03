@@ -1,4 +1,14 @@
-import { StyleSheet, Dimensions, ScrollView, ActivityIndicator, FlatList, TouchableOpacity, TextInput } from "react-native";
+import {
+    StyleSheet,
+    Dimensions,
+    ScrollView,
+    ActivityIndicator,
+    FlatList,
+    TouchableOpacity,
+    TextInput,
+    Alert, Modal,
+    View
+} from "react-native";
 import { Block, theme, Text, Radio } from "galio-framework";
 import { Card, Button } from "../../components";
 import nowTheme from "../../constants/Theme";
@@ -6,12 +16,17 @@ const { width } = Dimensions.get("screen");
 import React, {useState, Component, useEffect} from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import helpers from "../../store/helper";
+import ButtonCustom from "../../components/Button";
+import {showMessage} from "react-native-flash-message";
 
+const windowHeight = Dimensions.get('window').height;
 const MyPost = ({navigation}) => {
     const isFocused = useIsFocused();
     const [homeData, setHomeData] = useState({value: []});
     const [page, setPage] = useState({value: 1});
     const [loading, setLoading] = useState({value: false});
+    const [modal, setModal] = useState(false)
+    const [id, setId] = useState('')
     useEffect(() => {
         getHOmeData(1)
     }, [isFocused])
@@ -27,7 +42,6 @@ const MyPost = ({navigation}) => {
         .then(response => response.json())
         .then(result => {
             setHomeData({ value: result.posts })
-            console.log('__________________________________posts')
             setLoading({value: false})
         })
         .catch(error => {
@@ -37,6 +51,7 @@ const MyPost = ({navigation}) => {
     }
 
     const footer = () => {
+        let back = '<'
         return (
             <Block row middle>
                 <Block row>
@@ -44,7 +59,7 @@ const MyPost = ({navigation}) => {
                         style={styles.pageButton}
                         onPress={handlePreviousPage}
                     >
-                        back
+                        {back}
                     </Button>
                 </Block>
                 <Block row>
@@ -83,7 +98,43 @@ const MyPost = ({navigation}) => {
     }
 
     const addPost = () => {
+        console.log('create')
         navigation.navigate("CreatePost")
+    }
+
+    const openDelete = async (id) => {
+        await setModal(true)
+        setId(id)
+    }
+
+    const deletePost = async () => {
+        await fetch('http://47.254.253.64:5000/api/post/' + id,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + helpers.getStore()
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.msg === "done") {
+                    setModal(false)
+                    getHOmeData(1)
+                    showMessage({
+                        message: "Xóa bài viết thành công",
+                        type: "success",
+                    });
+                } else {
+                    showMessage({
+                        message: "Thất bại",
+                        type: "danger",
+                    });
+                }
+            })
+            .catch(error => {
+                console.log('Error', error.message);
+                throw error;
+            });
     }
 
     return !loading.value ? (
@@ -92,13 +143,34 @@ const MyPost = ({navigation}) => {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.articles}
                 >
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modal}
+                    >
+                        <View style={styles.deleteModal}>
+                            <Text>Dữ liệu sẽ không thể phục hồi, bạn có muốn tiếp tục?</Text>
+                            <Block row middle>
+                                <Button style={{width: 50, height: 30, backgroundColor: 'red'}} onPress={() => deletePost()}>Xóa</Button>
+                                <Button style={{width: 70, height: 30, backgroundColor: '#1C8FDB'}} onPress={() =>setModal(false)}>Hủy</Button>
+                            </Block>
+                        </View>
+                    </Modal>
                     <Block row middle>
                         <Button onPress={addPost}>Thêm mới</Button>
                     </Block>
                     <Block flex>
                         {
                             (homeData.value.length > 0) ? (
-                                homeData.value.map(item => <Card item={item} key={item.post_id} horizontal/>)
+                                homeData.value.map(item =>
+                                    <Block>
+                                        <Card item={item} key={item.post_id} horizontal/>
+                                        <Block row middle>
+                                            <Button style={{height: 30, backgroundColor: '#1C8FDB'}}>Chỉnh sửa</Button>
+                                            <Button key={item.time_upload} style={{height: 30, backgroundColor: 'red'}} onPress={() => openDelete(item.post_id)}>Xóa</Button>
+                                        </Block>
+                                    </Block>
+                                )
                             ) : (
                                 <Block flex style={styles.loading}>
                                     <Text style={{textAlign: 'center'}}>Không có dữ liệu</Text>
@@ -208,7 +280,15 @@ const styles = StyleSheet.create({
         marginTop: 50,
         height: 400,
         textAlign: 'center'
-    }
+    },
+    deleteModal: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: width,
+        height: windowHeight - 200
+    },
 });
 
 export default MyPost;

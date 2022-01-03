@@ -40,12 +40,12 @@ class Card extends React.Component {
 
     return (
       <Block row={horizontal} card flex style={cardContainer}>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('detailsScreen',{idPost: item.post_id})}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Chi tiết bài viết',{idPost: item.post_id})}>
           <Block flex style={imgContainer}>
             <Image resizeMode="cover" source={{uri: item.images[0]}} style={imageStyles} />
           </Block>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('detailsScreen',{idPost: item.post_id})}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('Chi tiết bài viết',{idPost: item.post_id})}>
           <Block flex space="between" style={styles.cardDescription}>
             <Block flex>
               <Text

@@ -8,17 +8,14 @@ import {
     Image,
     Dimensions,
     ScrollView, ActivityIndicator,
-    TextInput
+    TextInput,
+    Modal,
+    Alert
 } from 'react-native'
 import {Ionicons, Feather, FontAwesome} from '@expo/vector-icons';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
 import { SliderBox } from "react-native-image-slider-box";
-import call from 'react-native-phone-call'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from "react-redux";
-import { createStore } from 'redux'
-import userReducers from "./../../state/reducers/userReducers";
 import {showMessage} from "react-native-flash-message";
 import ButtonCustom from '../../components/Button'
 import {Block} from "galio-framework";
@@ -28,7 +25,10 @@ import Input from "../../components/Input";
 import nowTheme from "../../constants/Theme";
 import district from "../../constants/district";
 import investorList from "../../constants/investor";
-import RNPickerSelect from "react-native-picker-select";
+import MapView, {Marker} from "react-native-maps";
+import * as ImagePicker from "expo-image-picker";
+import SelectDropdown from 'react-native-select-dropdown'
+import Textarea from 'react-native-textarea';
 
 const width = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -41,6 +41,13 @@ const CreatePost = ({navigation}) => {
     const [bedroom, setBedroom] = useState({value: "", error: ""})
     const [toilet, setToilet] = useState({value: "", error: ""})
     const [description, setDescription] = useState({value: "", error: ""})
+    const [modal, setModal] = useState(false)
+    const [place, setPlace] = useState()
+    const [errorPlace, setErrorPlace] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [images, setImages] = useState([])
+    const [errorImages, setErrorImages] = useState("")
+    const countries = ["Egypt", "Canada", "Australia", "Ireland"]
     useEffect(() => {
         // if (!helpers.getStore()) {
         //     navigation.navigate("Login")
@@ -50,7 +57,7 @@ const CreatePost = ({navigation}) => {
 
     }, [])
 
-    const loadData = async () => {
+    const loadData = () => {
         // await fetch('http://47.254.253.64:5000/api/post/' + idPost,
         //     {
         //         method: 'GET',
@@ -68,10 +75,205 @@ const CreatePost = ({navigation}) => {
         //     });
     }
 
-    return (
+    const addPost = async () => {
+        if (!validate()) {
+            setLoading(true)
+            let formData = new FormData();
+            formData.append('title', title.value)
+            formData.append('price', price.value)
+            formData.append('investor', investor.value)
+            formData.append('address', address.value)
+            formData.append('acreage', acreage.value)
+            formData.append('description', description.value)
+            formData.append('toilet', toilet.value)
+            formData.append('bedroom', bedroom.value)
+            formData.append('lat', place.latitude)
+            formData.append('long', place.longitude)
+            for (let i = 0; i < images.length; i++) {
+                formData.append('images', images[i])
+            }
+            let requestOptions = {
+                method: 'POST',
+                redirect: 'follow',
+                headers: {
+                    // 'content-type': 'multipart/form-data',
+                    'Authorization': 'Bearer ' + helpers.getStore()
+                },
+                body: formData
+            };
+            await fetch("http://47.254.253.64:5000/api/posts/user", requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    setLoading(false)
+                    console.log(result)
+                    navigation.navigate("MyPost")
+                })
+                .catch(error =>  {
+                        console.log('error', error)
+                        setLoading(false)
+                    }
+                );
+        }
+    }
+
+    const validate = () => {
+        let error = false
+        if (!title.value) {
+            title.error = "Tiêu đề không được bỏ trống"
+            error = true
+        }
+        if (!price.value) {
+            price.error = "Giá không được bỏ trống"
+            error = true
+        }
+        if (!investor.value) {
+            investor.error = "Chọn nhà đầu tư"
+            error = true
+        }
+        if (!address.value) {
+            address.error = "Chọn quận huyện"
+            error = true
+        }
+        if (!place) {
+            setErrorPlace('Chọn vị trí')
+            error = true
+        }
+        if (!acreage.value) {
+            acreage.error = "Diện tích không được bỏ trống"
+            error = true
+        }
+        if (!toilet.value) {
+            setToilet({error: "Nhập số toilet"})
+            error = true
+        }
+        if (!bedroom.value) {
+            setBedroom({error: "Nhập số phòng ngủ"})
+            error = true
+        }
+        if (images.length === 0) {
+            setErrorImages("Chọn ảnh")
+            error = true
+        }
+        return error
+    }
+
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.cancelled) {
+            // ImagePicker saves the taken photo to disk and returns a local URI to it
+            let localUri = result.uri;
+            let filename = localUri.split('/').pop();
+
+            // Infer the type of the image
+            let match = /\.(\w+)$/.exec(filename);
+            let type = match ? `image/${match[1]}` : `image`;
+
+            // Upload the image using the fetch and FormData APIs
+            let formData = new FormData();
+            // Assume "photo" is the name of the form field the server expects
+            formData.append('image_1', { uri: localUri, name: filename, type });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: {
+                    'content-type': 'multipart/form-data',
+                    'Authorization': 'Bearer ' + helpers.getStore()
+                },
+                body: formData
+            };
+            setLoading(true)
+            await fetch("http://47.254.253.64:5000/api/image", requestOptions)
+                .then(res => res.json())
+                .then(result => {
+                    console.log(result.images[0])
+                    if (result.images[0]) {
+                        let arr = images
+                        arr.push(result.images[0])
+                        setImages(arr);
+                        setErrorImages("")
+                    }
+                    setLoading(false)
+                })
+                .catch(error => {
+                    setLoading(false)
+                    console.log('Error', error.message);
+                    throw error;
+                });
+        }
+    };
+
+    const removeImage = (index) => {
+        setImages(images.splice(index, 1))
+    }
+
+    return !loading ? (
         <SafeAreaView style={styles.container}>
             <ScrollView>
-                <Text style={{marginLeft: 20}}>Tiêu đề</Text>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modal}
+                    onRequestClose={() => {
+                        Alert.alert("Chọn ví trí thành công.");
+                    }}
+                >
+                    <View style={styles.mapModal}>
+                        <View >
+                            <MapView
+                                onPress={(e) => {
+                                    setPlace(e.nativeEvent.coordinate )
+                                    console.log(e.nativeEvent.coordinate)
+                                    setErrorPlace("")
+                                }
+
+                                }
+                                style={styles.map}
+                                initialRegion={{
+                                    latitude: 20.97747606182431,
+                                    longitude: 105.80145187675951,
+                                    latitudeDelta: 0.0922,
+                                    longitudeDelta: 0.0421,
+                                }}
+                            >
+                                {
+                                    (place) ? (
+                                        <MapView.Marker
+                                            coordinate={place}
+                                            title={"abc"}
+                                            description={"description"}
+                                        />
+                                    ) : (
+                                        null
+                                    )
+                                }
+                            </MapView>
+                        </View>
+                        <ButtonCustom onPress={() => setModal(!modal)}>Đóng</ButtonCustom>
+                    </View>
+                </Modal>
+                <Text onPress={pickImage} style={{marginLeft: 18, marginTop: 7, marginBottom: 10, color: "#0000FF"}}>
+                    <Feather name="image" size={16} color="#0000FF"/>
+                    Thêm ảnh (Chạm vào ảnh để xóa)
+                </Text>
+                {
+                    (errorImages) ? (
+                        <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{errorImages}</Text>
+                    ) : (null)
+                }
+                {
+                    (images.length > 0) ? (
+                            <SliderBox images={images} onCurrentImagePressed={(index) => removeImage(index)}	/>
+                        // images.map(item => <Text style={{marginLeft: 20, color: "#0000FF"}} key={item}>{item}</Text>)
+                    ) : (null)
+                }
+                <Text style={{marginLeft: 20, marginTop: 10}}>Tiêu đề</Text>
                 <Block row center>
                     <Input
                         right
@@ -80,10 +282,18 @@ const CreatePost = ({navigation}) => {
                         placeholder="Tiêu đề"
                         placeholderTextColor={'#8898AA'}
                         value={title.value}
-                        onChangeText={(search) => setTitle({value: search, error: ""})}
+                        onChangeText={(search) => {
+                            setTitle({value: search, error: ""})
+                            title.error = ""
+                        }}
                     />
                 </Block>
-                <Text style={{marginLeft: 20}}>Giá</Text>
+                {
+                    (title.error) ? (
+                        <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{title.error}</Text>
+                    ) : (null)
+                }
+                <Text style={{marginLeft: 20}}>Giá (triệu)</Text>
                 <Block row center>
                     <Input
                         right
@@ -93,30 +303,111 @@ const CreatePost = ({navigation}) => {
                         placeholderTextColor={'#8898AA'}
                         value={price.value}
                         keyboardType="numeric"
-                        onChangeText={(search) => setPrice({value: search, error: ""})}
+                        onChangeText={(search) => {
+                            setPrice({value: search, error: ""})
+                            price.error = ""
+                        }}
                     />
                 </Block>
+                {
+                    (price.error) ? (
+                        <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{price.error}</Text>
+                    ) : (null)
+                }
                 <Text style={{marginLeft: 20}}>Nhà đầu tư</Text>
                 <Block row style={{paddingLeft: 20}}>
-                    <RNPickerSelect
-                        useNativeAndroidPickerStyle={false}
-                        onValueChange={(value) => setInvestor({value: value, error: ''})}
-                        items={investorList}
-                        value={investor.value}
-                        fixAndroidTouchableBug={true}
+                    <SelectDropdown
+                        data={investorList}
+                        onSelect={(selectedItem, index) => {
+                            investor.value = selectedItem
+                            investor.error = ""
+                        }}
+                        defaultButtonText={"Chọn nhà đầu tư"}
+                        buttonTextAfterSelection={(selectedItem, index) => {
+                            return selectedItem;
+                        }}
+                        rowTextForSelection={(item, index) => {
+                            return item;
+                        }}
+                        buttonStyle={styles.dropdown1BtnStyle}
+                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                        renderDropdownIcon={(isOpened) => {
+                            return (
+                                <FontAwesome
+                                    name={isOpened ? "chevron-up" : "chevron-down"}
+                                    color={"#444"}
+                                    size={18}
+                                />
+                            );
+                        }}
+                        dropdownIconPosition={"right"}
+                        dropdownStyle={styles.dropdown1DropdownStyle}
+                        rowStyle={styles.dropdown1RowStyle}
+                        rowTextStyle={styles.dropdown1RowTxtStyle}
                     />
                 </Block>
+                {
+                    (investor.error) ? (
+                        <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{investor.error}</Text>
+                    ) : (null)
+                }
                 <Text style={{marginLeft: 20}}>Địa chỉ</Text>
                 <Block row style={{paddingLeft: 20}}>
-                    <RNPickerSelect
-                        useNativeAndroidPickerStyle={false}
-                        onValueChange={(value) => setAddress({value: value, error: ''})}
-                        items={district}
-                        value={address.value}
-                        fixAndroidTouchableBug={true}
+                    <SelectDropdown
+                        data={district}
+                        onSelect={(selectedItem, index) => {
+                            address.value = selectedItem
+                            address.error = ""
+                        }}
+                        defaultButtonText={"Chọn Quận, Huyện"}
+                        buttonTextAfterSelection={(selectedItem, index) => {
+                            return selectedItem;
+                        }}
+                        rowTextForSelection={(item, index) => {
+                            return item;
+                        }}
+                        buttonStyle={styles.dropdown1BtnStyle}
+                        buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                        renderDropdownIcon={(isOpened) => {
+                            return (
+                                <FontAwesome
+                                    name={isOpened ? "chevron-up" : "chevron-down"}
+                                    color={"#444"}
+                                    size={18}
+                                />
+                            );
+                        }}
+                        dropdownIconPosition={"right"}
+                        dropdownStyle={styles.dropdown1DropdownStyle}
+                        rowStyle={styles.dropdown1RowStyle}
+                        rowTextStyle={styles.dropdown1RowTxtStyle}
                     />
                 </Block>
-                <Text style={{marginLeft: 20}}>Diện tích</Text>
+                {
+                    (address.error) ? (
+                        <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{address.error}</Text>
+                    ) : (null)
+                }
+                {
+                    (place) ? (
+                        <Text onPress={() => setModal(!modal)} style={{marginLeft: 18, marginBottom: 10, marginTop: 7, color: "#0000FF"}}>
+                            <Feather name="map-pin" size={16} color="#0000FF"/>
+                             Đã chọn vị trí (Đổi vị trí)
+                        </Text>
+                    ) : (
+                        <Text onPress={() => setModal(!modal)} style={{marginLeft: 18, marginBottom: 10, marginTop: 7, color: "#0000FF"}}>
+                            <Feather name="map-pin" size={16} color="#0000FF"/>
+                             Chọn vị trí>
+                        </Text>
+                    )
+
+                }
+                {
+                    (errorPlace) ? (
+                        <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{errorPlace}</Text>
+                    ) : (null)
+                }
+                <Text style={{marginLeft: 20}}>Diện tích (m2)</Text>
                 <Block row center>
                     <Input
                         right
@@ -126,9 +417,17 @@ const CreatePost = ({navigation}) => {
                         placeholderTextColor={'#8898AA'}
                         value={acreage.value}
                         keyboardType="numeric"
-                        onChangeText={(search) => setAcreage({value: search, error: ''})}
+                        onChangeText={(search) => {
+                            setAcreage({value: search, error: ''})
+                            acreage.error = ""
+                        }}
                     />
                 </Block>
+                {
+                    (acreage.error) ? (
+                        <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{acreage.error}</Text>
+                    ) : (null)
+                }
                 <Text style={{marginLeft: 20}}>Phòng ngủ</Text>
                 <Block row center>
                     <Input
@@ -139,9 +438,17 @@ const CreatePost = ({navigation}) => {
                         placeholderTextColor={'#8898AA'}
                         value={bedroom.value}
                         keyboardType="numeric"
-                        onChangeText={(search) => setBedroom({value: search, error: ''})}
+                        onChangeText={(search) => {
+                            setBedroom({value: search, error: ''})
+                            bedroom.error = ""
+                        }}
                     />
                 </Block>
+                {
+                    (bedroom.error) ? (
+                        <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{bedroom.error}</Text>
+                    ) : (null)
+                }
                 <Text style={{marginLeft: 20}}>Toilet</Text>
                 <Block row center>
                     <Input
@@ -152,29 +459,46 @@ const CreatePost = ({navigation}) => {
                         placeholderTextColor={'#8898AA'}
                         value={toilet.value}
                         keyboardType="numeric"
-                        onChangeText={(search) => setToilet({value: search, error: ''})}
+                        onChangeText={(search) => {
+                            setToilet({value: search, error: ''})
+                            toilet.error = ""
+                        }}
                     />
                 </Block>
+                {
+                    (toilet.error) ? (
+                        <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{toilet.error}</Text>
+                    ) : (null)
+                }
                 <Text style={{marginLeft: 20}}>Mô tả</Text>
                 <Block row center>
-                    <TextInput
-                        style={styles.searchArea}
-                        multiline = {true}
-                        numberOfLines = {5}
-                        value={description.value}
-                        onChangeText={(value) => setDescription({value: value, error: ''})}
+                    {/*<TextInput*/}
+                    {/*    style={styles.searchArea}*/}
+                    {/*    multiline = {true}*/}
+                    {/*    numberOfLines = {5}*/}
+                    {/*    value={description.value}*/}
+                    {/*    onChangeText={(value) => setDescription({value: value, error: ''})}*/}
+                    {/*/>*/}
+                    <Textarea
+                        containerStyle={styles.textareaContainer}
+                        style={styles.textarea}
+                        onChangeText={(value) => description.value = value}
+                        defaultValue={description.value}
+                        maxLength={120}
+                        placeholder={'Mô tả'}
+                        placeholderTextColor={'#c7c7c7'}
+                        underlineColorAndroid={'transparent'}
                     />
                 </Block>
                 <Block row middle>
                     <ButtonCustom>Dự đoán giá</ButtonCustom>
-                    <ButtonCustom>Thêm mới</ButtonCustom>
+                    <ButtonCustom onPress={addPost}>Thêm mới</ButtonCustom>
                 </Block>
             </ScrollView>
         </SafeAreaView>
-    )
-// : <Block flex style={styles.loading}>
-//         <ActivityIndicator size="large" color="#ff5722" />
-//     </Block>;
+    ) : <Block flex style={styles.loading}>
+        <ActivityIndicator size="large" color="#ff5722" />
+    </Block>;
 }
 const styles = StyleSheet.create({
     container: {
@@ -201,7 +525,59 @@ const styles = StyleSheet.create({
     loading: {
         marginTop: 50,
         height: 400
-    }
+    },
+    mapModal: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: width,
+        height: windowHeight - 100,
+    },
+    map: {
+        width: width,
+        height: windowHeight - 200
+    },
+    dropdown1BtnStyle: {
+        width: "95%",
+        height: 48,
+        backgroundColor: "#FFF",
+        borderWidth: 1,
+        borderRadius: 30,
+        borderColor: nowTheme.COLORS.BORDER,
+        marginTop: 7,
+        marginBottom: 7,
+    },
+    dropdown1BtnTxtStyle: { color: "#444", textAlign: "left" },
+    dropdown1DropdownStyle: { backgroundColor: "#EFEFEF" },
+    dropdown1RowStyle: {
+        backgroundColor: "#EFEFEF",
+        borderBottomColor: "#C5C5C5",
+    },
+    dropdown1RowTxtStyle: { color: "#444", textAlign: "left" },
+    textarea: {
+        textAlignVertical: 'top',  // hack android
+        height: 170,
+        fontSize: 14,
+        color: '#333',
+    },
+    textareaContainer: {
+        marginTop: 5,
+        height: 180,
+        padding: 5,
+        width: width - 50,
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: nowTheme.COLORS.BORDER,
+    },
+    deleteModal: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: width,
+        height: windowHeight - 200
+    },
 });
 
 const mapStateToProps = (state) => {
