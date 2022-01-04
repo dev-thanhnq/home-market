@@ -98,7 +98,6 @@ const MyPost = ({navigation}) => {
     }
 
     const addPost = () => {
-        console.log('create')
         navigation.navigate("CreatePost")
     }
 
@@ -156,17 +155,17 @@ const MyPost = ({navigation}) => {
                             </Block>
                         </View>
                     </Modal>
-                    <Block row middle>
-                        <Button onPress={addPost}>Thêm mới</Button>
+                    <Block row>
+                        <Button onPress={() => navigation.navigate("CreatePost")}>Thêm mới</Button>
                     </Block>
                     <Block flex>
                         {
                             (homeData.value.length > 0) ? (
-                                homeData.value.map(item =>
-                                    <Block>
+                                homeData.value.map((item, index) =>
+                                    <Block key={index}>
                                         <Card item={item} key={item.post_id} horizontal/>
-                                        <Block row middle>
-                                            <Button style={{height: 30, backgroundColor: '#1C8FDB'}}>Chỉnh sửa</Button>
+                                        <Block row middle key={index}>
+                                            <Button key={index} style={{height: 30, backgroundColor: '#1C8FDB'}} onPress={() => navigation.navigate('UpdatePost',{idPost: item.post_id})}>Chỉnh sửa</Button>
                                             <Button key={item.time_upload} style={{height: 30, backgroundColor: 'red'}} onPress={() => openDelete(item.post_id)}>Xóa</Button>
                                         </Block>
                                     </Block>

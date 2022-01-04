@@ -20,6 +20,7 @@ import ForgotPassword from "../screens/auth/ForgotPassword";
 import mapView from "../screens/MapView/MapView";
 import Logout from "../screens/auth/Logout";
 import CreatePost from "../screens/post/CreatePost";
+import UpdatePost from "../screens/post/UpdatePost";
 
 const {width} = Dimensions.get("screen");
 
@@ -35,7 +36,6 @@ function LoginStack(props) {
                 options={{
                     header: ({navigation, scene}) => (
                         <Header
-                            transparent
                             title="Đăng nhập"
                             navigation={navigation}
                             scene={scene}
@@ -50,7 +50,7 @@ function LoginStack(props) {
                 options={{
                     header: ({navigation, scene}) => (
                         <Header
-                            transparent
+                            back
                             title="Đăng ký"
                             navigation={navigation}
                             scene={scene}
@@ -65,10 +65,10 @@ function LoginStack(props) {
                 options={{
                     header: ({navigation, scene}) => (
                         <Header
-                            transparent
                             title="Quên mật khẩu"
                             navigation={navigation}
                             scene={scene}
+                            back
                         />
                     ),
                     headerTransparent: true
@@ -96,7 +96,7 @@ function ProfileStack(props) {
                 options={{
                     header: ({navigation, scene}) => (
                         <Header
-                            title="Info"
+                            title="Thông tin tài khoản"
                             search
                             options
                             navigation={navigation}
@@ -175,11 +175,11 @@ function HomeStack(props) {
                                   <Header
                                       title=""
                                       back
-                                      transparent
                                       navigation={navigation}
                                       scene={scene}
                                   />
                               ),
+                              cardStyle: {backgroundColor: "#FFFFFF"},
                               headerTransparent: true
                           }}
             />
@@ -189,7 +189,6 @@ function HomeStack(props) {
                 options={{
                     header: ({navigation, scene}) => (
                         <Header
-                            transparent
                             title="Quên mật khẩu"
                             navigation={navigation}
                             scene={scene}
@@ -212,11 +211,11 @@ function FollowStack(props) {
                       header: ({navigation, scene}) => (
                           <Header
                               title="Bài viết theo dõi"
-                              transparent
                               navigation={navigation}
                               scene={scene}
                           />
                       ),
+                      cardStyle: {backgroundColor: "#FFFFFF"}
                       // headerTransparent: true
                   }}
             />
@@ -240,11 +239,11 @@ function MyPostStack(props) {
                       header: ({navigation, scene}) => (
                           <Header
                               title="Bài viết của tôi"
-                              transparent
                               navigation={navigation}
                               scene={scene}
                           />
                       ),
+                      cardStyle: {backgroundColor: "#FFFFFF"}
                   }}
             />
             <Stack.Screen name="Chi tiết bài viết"
@@ -253,21 +252,37 @@ function MyPostStack(props) {
             <Stack.Screen name="mapView"
                           component={mapView}
             />
-            <Stack.Screen name="CreatePost"
-                          component={CreatePost}
-                          options={{
-                              header: ({navigation, scene}) => (
-                                  <Header
-                                      title="Thêm mới bài viết"
-                                      back
-                                      transparent
-                                      navigation={navigation}
-                                      scene={scene}
-                                  />
-                              ),
-                          }}
+            <Stack.Screen
+                name="CreatePost"
+                component={CreatePost}
+                options={{
+                    header: ({navigation, scene}) => (
+                        <Header
+                            title="Thêm mới bài viết"
+                            back
+                            transparent
+                            navigation={navigation}
+                            scene={scene}
+                        />
+                    ),
+                }}
 
 
+            />
+            <Stack.Screen
+                name="UpdatePost"
+                component={UpdatePost}
+                options={{
+                    header: ({navigation, scene}) => (
+                        <Header
+                            title="Chỉnh sửa bài viết"
+                            back
+                            transparent
+                            navigation={navigation}
+                            scene={scene}
+                        />
+                        ),
+                }}
             />
         </Stack.Navigator>
     );

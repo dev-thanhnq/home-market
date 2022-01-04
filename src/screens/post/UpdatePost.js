@@ -32,7 +32,8 @@ import Textarea from 'react-native-textarea';
 
 const width = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const CreatePost = ({navigation}) => {
+const UpdatePost = ({navigation, route}) => {
+    const {idPost} = route.params;
     const [title, setTitle] = useState({value: "", error: ""})
     const [address, setAddress] = useState({value: "", error: ""})
     const [price, setPrice] = useState({value: "", error: ""})
@@ -42,7 +43,7 @@ const CreatePost = ({navigation}) => {
     const [toilet, setToilet] = useState({value: "", error: ""})
     const [description, setDescription] = useState({value: "", error: ""})
     const [modal, setModal] = useState(false)
-    const [place, setPlace] = useState()
+    const [place, setPlace] = useState({latitude: 20.97747606182431, longitude: 105.80145187675951})
     const [errorPlace, setErrorPlace] = useState("")
     const [loading, setLoading] = useState(false)
     const [images, setImages] = useState([])
@@ -57,72 +58,76 @@ const CreatePost = ({navigation}) => {
 
     }, [])
 
-    const loadData = () => {
+    const loadData = async () => {
         setLoading(true)
-        setTitle({value: "", error: ""})
-        setPrice({value: "", error: ""})
-        setAcreage({value: "", error: ""})
-        setAddress({value: "", error: ""})
-        setInvestor({value: "", error: ""})
-        setBedroom({value: "", error: ""})
-        setToilet({value: "", error: ""})
-        setDescription({value: "", error: ""})
-        setTitle({value: "", error: ""})
-        setPlace("")
-        setPricePredict({value: ''})
-        setLoading(false)
+        await fetch('http://47.254.253.64:5000/api/post/' + idPost,
+            {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + helpers.getStore()
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                setTitle({value: data.title, error: ""})
+                setPrice({value: data.price.toString(), error: ""})
+                setAcreage({value: data.acreage.toString(), error: ""})
+                setAddress({value: data.address, error: ""})
+                setInvestor({value: data.investor, error: ""})
+                setBedroom({value: data.bedroom.toString(), error: ""})
+                setToilet({value: data.toilet.toString(), error: ""})
+                setDescription({value: data.description, error: ""})
+                setTitle({value: data.title, error: ""})
+                setPlace({latitude: data.latitude, longitude: data.longitude})
+                setPricePredict({value: ''})
+                setLoading(false)
+            })
+            .catch(error => {
+                setLoading(false)
+                console.log('Error', error.message);
+                throw error;
+            });
     }
 
-    const addPost = async () => {
+    const updatePost = async () => {
         if (!validate()) {
             setLoading(true)
             let formData = new FormData();
             formData.append('title', title.value)
-            formData.append('price', price.value)
+            formData.append('price', parseInt(price.value))
             formData.append('investor', investor.value)
             formData.append('address', address.value)
-            formData.append('acreage', acreage.value)
+            formData.append('acreage', parseInt(acreage.value))
             formData.append('description', description.value)
-            formData.append('toilet', toilet.value)
-            formData.append('bedroom', bedroom.value)
-            formData.append('lat', place.latitude)
-            formData.append('long', place.longitude)
-            let imagesString = ""
-            for (let i = 0; i < images.length; i++) {
-                imagesString += images[i]
-                if (i+1 < images.length) {
-                    imagesString += ","
-                }
-            }
-            formData.append('images', imagesString)
-            console.log(formData)
+            formData.append('toilet', parseInt(toilet.value))
+            formData.append('bedroom', parseInt(bedroom.value))
+            formData.append('latitude', place.latitude)
+            formData.append('longitude', place.longitude)
             let requestOptions = {
-                method: 'POST',
-                redirect: 'follow',
+                method: 'PUT',
                 headers: {
                     'content-type': 'multipart/form-data',
                     'Authorization': 'Bearer ' + helpers.getStore()
                 },
                 body: formData
             };
-            await fetch("http://47.254.253.64:5000/api/posts/user", requestOptions)
+            await fetch("http://47.254.253.64:5000/api/post/" + idPost.toString(), requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     setLoading(false)
-                    console.log(result)
                     navigation.navigate("MyPost")
                     showMessage({
-                        message: "Thêm mới thành công",
+                        message: "Cập nhật thành công",
                         type: "success",
                     });
                 })
                 .catch(error =>  {
                         console.log('error', error)
                         setLoading(false)
-                        showMessage({
-                            message: "Thêm mới thất bại",
-                            type: "error",
-                        });
+                    showMessage({
+                        message: "Cập nhật thất bại",
+                        type: "error",
+                    });
                     }
                 );
         }
@@ -158,6 +163,7 @@ const CreatePost = ({navigation}) => {
                         setPricePredict({value: result})
                         setLoading(false)
                     }
+
                 })
                 .catch(error =>  {
                         console.log('error', error)
@@ -199,10 +205,6 @@ const CreatePost = ({navigation}) => {
         }
         if (!bedroom.value) {
             setBedroom({error: "Nhập số phòng ngủ"})
-            error = true
-        }
-        if (images.length === 0) {
-            setErrorImages("Chọn ảnh")
             error = true
         }
         return error
@@ -261,9 +263,7 @@ const CreatePost = ({navigation}) => {
     };
 
     const removeImage = (index) => {
-        let arrImg = images
-        arrImg.splice(index, 1)
-        setImages(arrImg)
+        setImages(images.splice(index, 1))
     }
 
     return !loading ? (
@@ -282,6 +282,7 @@ const CreatePost = ({navigation}) => {
                             <MapView
                                 onPress={(e) => {
                                     setPlace(e.nativeEvent.coordinate )
+                                    console.log(e.nativeEvent)
                                     setErrorPlace("")
                                 }
 
@@ -298,32 +299,18 @@ const CreatePost = ({navigation}) => {
                                     (place) ? (
                                         <MapView.Marker
                                             coordinate={place ? place : {latitude: 20.97747606182431,
-                                                longitude: 105.80145187675951}}
-                                            title={"abc"}
+                                                longitude: 105.80145187675951,}}
                                             description={"description"}
                                         />
-                                    ) : (null)
+                                    ) : (
+                                        null
+                                    )
                                 }
                             </MapView>
                         </View>
                         <ButtonCustom onPress={() => setModal(!modal)}>Đóng</ButtonCustom>
                     </View>
                 </Modal>
-                <Text onPress={pickImage} style={{marginLeft: 18, marginTop: 7, marginBottom: 10, color: "#0000FF"}}>
-                    <Feather name="image" size={16} color="#0000FF"/>
-                    Thêm ảnh (Chạm vào ảnh để xóa)
-                </Text>
-                {
-                    (errorImages) ? (
-                        <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{errorImages}</Text>
-                    ) : (null)
-                }
-                {
-                    (images.length > 0) ? (
-                            <SliderBox images={images} onCurrentImagePressed={(index) => removeImage(index)}	/>
-                        // images.map(item => <Text style={{marginLeft: 20, color: "#0000FF"}} key={item}>{item}</Text>)
-                    ) : (null)
-                }
                 <Text style={{marginLeft: 20, marginTop: 10}}>Tiêu đề</Text>
                 <Block row center>
                     <Input
@@ -335,6 +322,7 @@ const CreatePost = ({navigation}) => {
                         value={title.value}
                         onChangeText={(search) => {
                             setTitle({value: search, error: ""})
+                            title.error = ""
                         }}
                     />
                 </Block>
@@ -351,7 +339,7 @@ const CreatePost = ({navigation}) => {
                             investor.value = selectedItem
                             investor.error = ""
                         }}
-                        defaultButtonText={"Chọn nhà đầu tư"}
+                        defaultButtonText={investor.value}
                         buttonTextAfterSelection={(selectedItem, index) => {
                             return selectedItem;
                         }}
@@ -388,7 +376,7 @@ const CreatePost = ({navigation}) => {
                             address.value = selectedItem
                             address.error = ""
                         }}
-                        defaultButtonText={"Chọn Quận, Huyện"}
+                        defaultButtonText={address.value}
                         buttonTextAfterSelection={(selectedItem, index) => {
                             return selectedItem;
                         }}
@@ -421,12 +409,12 @@ const CreatePost = ({navigation}) => {
                     (place) ? (
                         <Text onPress={() => setModal(!modal)} style={{marginLeft: 18, marginBottom: 10, marginTop: 7, color: "#0000FF"}}>
                             <Feather name="map-pin" size={16} color="#0000FF"/>
-                             Đã chọn vị trí (Đổi vị trí)
+                            Đã chọn vị trí (Đổi vị trí)
                         </Text>
                     ) : (
                         <Text onPress={() => setModal(!modal)} style={{marginLeft: 18, marginBottom: 10, marginTop: 7, color: "#0000FF"}}>
                             <Feather name="map-pin" size={16} color="#0000FF"/>
-                             Chọn vị trí>
+                            Chọn vị trí>
                         </Text>
                     )
 
@@ -448,6 +436,7 @@ const CreatePost = ({navigation}) => {
                         keyboardType="numeric"
                         onChangeText={(search) => {
                             setAcreage({value: search, error: ''})
+                            acreage.error = ""
                         }}
                     />
                 </Block>
@@ -468,6 +457,7 @@ const CreatePost = ({navigation}) => {
                         keyboardType="numeric"
                         onChangeText={(search) => {
                             setBedroom({value: search, error: ''})
+                            bedroom.error = ""
                         }}
                     />
                 </Block>
@@ -488,6 +478,7 @@ const CreatePost = ({navigation}) => {
                         keyboardType="numeric"
                         onChangeText={(search) => {
                             setToilet({value: search, error: ''})
+                            toilet.error = ""
                         }}
                     />
                 </Block>
@@ -496,6 +487,19 @@ const CreatePost = ({navigation}) => {
                         <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{toilet.error}</Text>
                     ) : (null)
                 }
+                <Text style={{marginLeft: 20}}>Mô tả</Text>
+                <Block row center>
+                    <Textarea
+                        containerStyle={styles.textareaContainer}
+                        style={styles.textarea}
+                        onChangeText={(value) => description.value = value}
+                        defaultValue={description.value}
+                        maxLength={120}
+                        placeholder={'Mô tả'}
+                        placeholderTextColor={'#c7c7c7'}
+                        underlineColorAndroid={'transparent'}
+                    />
+                </Block>
                 <Text style={{marginLeft: 20}}>
                     Giá (triệu)
                     {
@@ -515,6 +519,7 @@ const CreatePost = ({navigation}) => {
                         keyboardType="numeric"
                         onChangeText={(search) => {
                             setPrice({value: search, error: ""})
+                            price.error = ""
                         }}
                     />
                 </Block>
@@ -523,22 +528,9 @@ const CreatePost = ({navigation}) => {
                         <Text style={{marginLeft: 20, marginBottom: 10, color: 'red', fontSize: 12}}>{price.error}</Text>
                     ) : (null)
                 }
-                <Text style={{marginLeft: 20}}>Mô tả</Text>
-                <Block row center>
-                    <Textarea
-                        containerStyle={styles.textareaContainer}
-                        style={styles.textarea}
-                        onChangeText={(value) => description.value = value}
-                        defaultValue={description.value}
-                        maxLength={120}
-                        placeholder={'Mô tả'}
-                        placeholderTextColor={'#c7c7c7'}
-                        underlineColorAndroid={'transparent'}
-                    />
-                </Block>
                 <Block row middle>
                     <ButtonCustom onPress={predict}>Dự đoán giá</ButtonCustom>
-                    <ButtonCustom onPress={addPost}>Thêm mới</ButtonCustom>
+                    <ButtonCustom onPress={updatePost}>Lưu</ButtonCustom>
                 </Block>
             </ScrollView>
         </SafeAreaView>
@@ -631,4 +623,4 @@ const mapStateToProps = (state) => {
         user: state.userReducers
     }
 }
-export default connect(mapStateToProps, null)(CreatePost);
+export default connect(mapStateToProps, null)(UpdatePost);

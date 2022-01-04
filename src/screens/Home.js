@@ -44,12 +44,6 @@ class Home extends React.Component {
       this.setState({
           homeData: []
       }, function () {
-          // console.log("http://47.254.253.64:5000/api/posts?page="
-          //     + this.state.page + "&filter=address:"
-          //     + (this.state.district ? "" + this.state.district : "")
-          //     + (this.state.toilet ? ",toilet:" + this.state.toilet : "")
-          //     + (this.state.bedroom ? ",bedroom:" + this.state.bedroom : "")
-          //     + (this.state.search ? "&search=" + this.state.search : ""))
           fetch("http://47.254.253.64:5000/api/posts?page="
               + this.state.page + "&filter=address:"
               + (this.state.district ? "" + this.state.district : "")
@@ -64,7 +58,6 @@ class Home extends React.Component {
                   this.setState({
                       totalPage: result.paging.total_page
                   })
-                  console.log('__________________________________1')
               })
               .catch(error => console.log('error', error));
       })
@@ -168,7 +161,7 @@ class Home extends React.Component {
                           />
                       </Block>
                   </Block>
-                  <Block style={{width: 220, paddingLeft: 14}}>
+                  <Block style={{width: 220, paddingLeft: 9}}>
                       <SelectDropdown
                           data={district}
                           onSelect={(selectedItem, index) => this.setState({district: selectedItem})}
@@ -334,11 +327,12 @@ const styles = StyleSheet.create({
     },
     search: {
         height: 48,
-        width: width - 120,
+        width: width - 110,
         marginHorizontal: 16,
         borderWidth: 1,
         borderRadius: 30,
-        borderColor: nowTheme.COLORS.BORDER
+        borderColor: nowTheme.COLORS.BORDER,
+        marginRight: 3
     },
     searchBtn: {
         width: 50,
@@ -356,14 +350,15 @@ const styles = StyleSheet.create({
     },
     filterBtn: {
         height: 20,
-        width: 100
+        width: 100,
+        marginLeft: 13
     },
     loading: {
       marginTop: 50,
       height: 400
     },
     dropdown1BtnStyle: {
-        width: "70%",
+        width: width - 270,
         height: 40,
         backgroundColor: "#FFF",
         borderWidth: 1,
