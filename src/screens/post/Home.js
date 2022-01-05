@@ -1,14 +1,14 @@
 import { StyleSheet, Dimensions, ScrollView, ActivityIndicator, FlatList, TouchableOpacity, TextInput } from "react-native";
 import { Block, theme, Text, Radio } from "galio-framework";
 
-import { Card, Button } from "../components";
-import articles from "../constants/articles";
-import district from "../constants/district";
+import { Card, Button } from "../../components";
+import articles from "../../constants/articles";
+import district from "../../constants/district";
 import {View} from "react-native-reanimated";
 // import RNPickerSelect from 'react-native-picker-select';
-import Icon from "../components/Icon";
-import Input from "../components/Input";
-import nowTheme from "../constants/Theme";
+import Icon from "../../components/Icon";
+import Input from "../../components/Input";
+import nowTheme from "../../constants/Theme";
 import {inlineStyles} from "react-native-svg";
 const { width } = Dimensions.get("screen");
 import React, { useState, Component } from 'react';

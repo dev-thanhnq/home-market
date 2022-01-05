@@ -17,12 +17,12 @@ import call from 'react-native-phone-call'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from "react-redux";
 import { createStore } from 'redux'
-import userReducers from "./../../state/reducers/userReducers";
+import userReducers from "../../state/reducers/userReducers";
 import {showMessage} from "react-native-flash-message";
 import ButtonCustom from '../../components/Button'
 import {Block} from "galio-framework";
 import { useIsFocused } from '@react-navigation/native';
-import helpers from "../../../src/store/helper";
+import helpers from "../../store/helper";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

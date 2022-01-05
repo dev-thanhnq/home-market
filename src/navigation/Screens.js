@@ -3,12 +3,12 @@ import {Easing, Animated, Dimensions} from "react-native";
 import {createStackNavigator} from "@react-navigation/stack";
 import {createDrawerNavigator} from "@react-navigation/drawer";
 // screens
-import Home from '../screens/Home';
+import Home from '../screens/post/Home';
 import Pro from '../screens/Pro';
 import Profile from '../screens/auth/Profile';
 import Login from "../screens/auth/Login";
 import Register from "../screens/auth/Register";
-import DetailScreens from "../screens/DetailScreens/DetailScreen"
+import DetailScreens from "../screens/post/DetailScreen"
 import FollowList from "../screens/post/FollowList"
 import MyPost from "../screens/post/MyPost"
 // drawer
