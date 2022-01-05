@@ -18,6 +18,7 @@ import { useIsFocused } from '@react-navigation/native';
 import helpers from "../../store/helper";
 import ButtonCustom from "../../components/Button";
 import {showMessage} from "react-native-flash-message";
+import { config } from '../../../config'
 
 const windowHeight = Dimensions.get('window').height;
 const MyPost = ({navigation}) => {
@@ -33,7 +34,7 @@ const MyPost = ({navigation}) => {
 
     const getHOmeData = async (currentPage) => {
         setLoading({value: true})
-        await fetch("http://47.254.253.64:5000/api/posts/user?page" + currentPage.toString(),{
+        await fetch( config() + "posts/user?page" + currentPage.toString(),{
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + helpers.getStore()
@@ -107,7 +108,7 @@ const MyPost = ({navigation}) => {
     }
 
     const deletePost = async () => {
-        await fetch('http://47.254.253.64:5000/api/post/' + id,
+        await fetch( config() + 'post/' + id,
             {
                 method: 'DELETE',
                 headers: {

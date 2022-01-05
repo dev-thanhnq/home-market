@@ -20,7 +20,7 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
-      case "Theo dõi":
+      case "Bài viết theo dõi":
         return (
           <Icon
             name="atom2x"
@@ -30,20 +30,10 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
-      case "Articles":
+      case "Đăng nhập":
         return (
           <Icon
             name="paper"
-            family="NowExtra"
-            size={18}
-            color={focused ? nowTheme.COLORS.PRIMARY : "white"}
-            style={{ opacity: 0.5 }}
-          />
-        );
-      case "Bài của tôi":
-        return (
-          <Icon
-            name="profile-circle"
             family="NowExtra"
             size={18}
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}
@@ -60,7 +50,7 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
-      case "Settings":
+      case "Đăng xuất":
         return (
           <Icon
             name="settings-gear-642x"
@@ -70,7 +60,7 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
-      case "Examples":
+      case "Bài viết của tôi":
         return (
           <Icon
             name="album"

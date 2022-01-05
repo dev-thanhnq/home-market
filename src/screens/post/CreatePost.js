@@ -29,6 +29,7 @@ import MapView, {Marker} from "react-native-maps";
 import * as ImagePicker from "expo-image-picker";
 import SelectDropdown from 'react-native-select-dropdown'
 import Textarea from 'react-native-textarea';
+import { config } from '../../../config'
 
 const width = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -105,11 +106,10 @@ const CreatePost = ({navigation}) => {
                 },
                 body: formData
             };
-            await fetch("http://47.254.253.64:5000/api/posts/user", requestOptions)
+            await fetch( config() + "posts/user", requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     setLoading(false)
-                    console.log(result)
                     navigation.navigate("MyPost")
                     showMessage({
                         message: "Thêm mới thành công",
@@ -129,15 +129,12 @@ const CreatePost = ({navigation}) => {
     }
 
     const predict = async () => {
-        if (!validate()) {
+        if (!validatePredict()) {
             setLoading(true)
             let formData = new FormData();
-            formData.append('title', title.value)
-            formData.append('price', parseInt(price.value))
             formData.append('investor', investor.value)
             formData.append('address', address.value)
             formData.append('acreage', parseInt(acreage.value))
-            formData.append('description', description.value)
             formData.append('toilet', parseInt(toilet.value))
             formData.append('bedroom', parseInt(bedroom.value))
             formData.append('lat', place.latitude)
@@ -150,11 +147,10 @@ const CreatePost = ({navigation}) => {
                 },
                 body: formData
             };
-            await fetch("http://47.254.253.64:5000/api/posts/predict", requestOptions)
+            await fetch(config() + "posts/predict", requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     if (!result.error) {
-                        console.log(result)
                         setPricePredict({value: result})
                         setLoading(false)
                     }
@@ -170,19 +166,19 @@ const CreatePost = ({navigation}) => {
     const validate = () => {
         let error = false
         if (!title.value) {
-            title.error = "Tiêu đề không được bỏ trống"
+            setTitle({value: title.value, error: "Tiêu đề không được bỏ trống"})
             error = true
         }
         if (!price.value) {
-            price.error = "Giá không được bỏ trống"
+            setPrice({value: price.value, error: "Giá không được bỏ trống"})
             error = true
         }
         if (!investor.value) {
-            investor.error = "Chọn nhà đầu tư"
+            setInvestor({value: investor.value, error: "Chọn nhà đầu tư"})
             error = true
         }
         if (!address.value) {
-            address.error = "Chọn quận huyện"
+            setAddress({value: address.value, error: "Chọn quận huyện"})
             error = true
         }
         if (!place) {
@@ -190,19 +186,48 @@ const CreatePost = ({navigation}) => {
             error = true
         }
         if (!acreage.value) {
-            acreage.error = "Diện tích không được bỏ trống"
+            setAcreage({value: acreage.value, error: "Diện tích không được bỏ trống"})
             error = true
         }
         if (!toilet.value) {
-            setToilet({error: "Nhập số toilet"})
+            setToilet({value: toilet.value, error: "Nhập số toilet"})
             error = true
         }
         if (!bedroom.value) {
-            setBedroom({error: "Nhập số phòng ngủ"})
+            setBedroom({value: bedroom.value, error: "Nhập số phòng ngủ"})
             error = true
         }
         if (images.length === 0) {
             setErrorImages("Chọn ảnh")
+            error = true
+        }
+        return error
+    }
+
+    const validatePredict = () => {
+        let error = false
+        if (!investor.value) {
+            setInvestor({value: investor.value, error: "Chọn nhà đầu tư"})
+            error = true
+        }
+        if (!address.value) {
+            setAddress({value: address.value, error: "Chọn quận huyện"})
+            error = true
+        }
+        if (!place) {
+            setErrorPlace('Chọn vị trí')
+            error = true
+        }
+        if (!acreage.value) {
+            setAcreage({value: acreage.value, error: "Diện tích không được bỏ trống"})
+            error = true
+        }
+        if (!toilet.value) {
+            setToilet({value: toilet.value, error: "Nhập số toilet"})
+            error = true
+        }
+        if (!bedroom.value) {
+            setBedroom({value: bedroom.value, error: "Nhập số phòng ngủ"})
             error = true
         }
         return error
@@ -240,7 +265,7 @@ const CreatePost = ({navigation}) => {
                 body: formData
             };
             setLoading(true)
-            await fetch("http://47.254.253.64:5000/api/image", requestOptions)
+            await fetch( config() + "image", requestOptions)
                 .then(res => res.json())
                 .then(result => {
                     console.log(result.images[0])
@@ -348,8 +373,7 @@ const CreatePost = ({navigation}) => {
                     <SelectDropdown
                         data={investorList}
                         onSelect={(selectedItem, index) => {
-                            investor.value = selectedItem
-                            investor.error = ""
+                            setInvestor({value: selectedItem, error: ""})
                         }}
                         defaultButtonText={"Chọn nhà đầu tư"}
                         buttonTextAfterSelection={(selectedItem, index) => {
@@ -385,8 +409,7 @@ const CreatePost = ({navigation}) => {
                     <SelectDropdown
                         data={district}
                         onSelect={(selectedItem, index) => {
-                            address.value = selectedItem
-                            address.error = ""
+                            setAddress({value: selectedItem, error: ""})
                         }}
                         defaultButtonText={"Chọn Quận, Huyện"}
                         buttonTextAfterSelection={(selectedItem, index) => {

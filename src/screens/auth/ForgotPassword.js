@@ -12,6 +12,7 @@ import { userValidator } from '../../helpers/userValidator'
 import { passwordValidator } from '../../helpers/passwordValidator'
 import { emailValidator } from "../../helpers/emailValidator";
 import {showMessage} from "react-native-flash-message";
+import { config } from '../../../config'
 
 export default function ForgotPassword({ navigation }) {
     const [email, setEmail] = useState({ value: '', error: '' })
@@ -32,7 +33,7 @@ export default function ForgotPassword({ navigation }) {
             redirect: 'follow',
             body: formdata
         };
-        fetch("http://47.254.253.64:5000/api/auth/forgot", requestOptions)
+        fetch( config() + "auth/forgot", requestOptions)
             .then(response => response.json())
             .then(result => {
                 if (result.error) {

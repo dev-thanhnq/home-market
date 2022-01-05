@@ -22,6 +22,7 @@ import userReducers from "../../state/reducers/userReducers";
 import * as ImagePicker from 'expo-image-picker';
 import { useIsFocused } from '@react-navigation/native';
 import helpers from "../../store/helper";
+import { config } from '../../../config'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -96,7 +97,7 @@ const LoginScreen = ({ navigation }) => {
       body: formdata
     };
     setLoading({ value: true})
-    await fetch("http://47.254.253.64:5000/api/user", requestOptions)
+    await fetch( config() + "user", requestOptions)
         .then(response => response.json())
         .then(result => {
           setLoading({ value: false})
@@ -132,7 +133,7 @@ const LoginScreen = ({ navigation }) => {
 
   const loadData = async () => {
     setLoading({ value: true})
-    await fetch('http://47.254.253.64:5000/api/user',
+    await fetch( config() + 'user',
         {
           method: 'GET',
           headers: {
@@ -188,7 +189,7 @@ const LoginScreen = ({ navigation }) => {
                 body: formdata
             };
             setLoading({ value: true})
-            await fetch("http://47.254.253.64:5000/api/image", requestOptions)
+            await fetch( config() + "image", requestOptions)
                 .then(res => res.json())
                 .then(result => {
                     if (result.images[0]) {
@@ -236,7 +237,7 @@ const LoginScreen = ({ navigation }) => {
           body: formData
       };
 
-      await fetch('http://47.254.253.64:5000/api/user',requestOptions)
+      await fetch( config() + 'user',requestOptions)
           .then(res => res.json())
           .then(data => {
               if (data.msg === "Account was deleted") {

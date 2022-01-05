@@ -6,6 +6,7 @@ const { width } = Dimensions.get("screen");
 import React, {useState, Component, useEffect} from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import helpers from "../../store/helper";
+import { config } from '../../../config'
 
 const FollowList = () => {
     const isFocused = useIsFocused();
@@ -17,7 +18,7 @@ const FollowList = () => {
 
     const getHOmeData = async () => {
         setLoading(true)
-        await fetch("http://47.254.253.64:5000/api/posts/follow",{
+        await fetch( config() + "posts/follow",{
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + helpers.getStore()

@@ -18,6 +18,7 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { createStore } from 'redux'
 import userReducers from "../../state/reducers/userReducers";
 import helpers from "../../store/helper";
+import { config } from '../../../config'
 
 function LoginScreen({ navigation }) {
     // const dispatch = useDispatch()
@@ -45,7 +46,7 @@ function LoginScreen({ navigation }) {
           redirect: 'follow',
           body: formdata
       };
-      fetch("http://47.254.253.64:5000/api/auth/login", requestOptions)
+      fetch( config() + "auth/login", requestOptions)
           .then(response => response.json())
           .then(result => {
               if (result.error) {

@@ -12,6 +12,7 @@ import { userValidator } from '../../helpers/userValidator'
 import { passwordValidator } from '../../helpers/passwordValidator'
 import { emailValidator } from "../../helpers/emailValidator";
 import {showMessage} from "react-native-flash-message";
+import { config } from '../../../config'
 
 export default function Register({ navigation }) {
     const [username, setUsername] = useState({ value: '', error: '' })
@@ -42,7 +43,7 @@ export default function Register({ navigation }) {
             redirect: 'follow',
             body: formdata
         };
-        fetch("http://47.254.253.64:5000/api/auth/signup", requestOptions)
+        fetch( config() + "auth/signup", requestOptions)
             .then(response => response.json())
             .then(result => {
                 if (result.error) {

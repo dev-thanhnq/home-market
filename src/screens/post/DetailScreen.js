@@ -23,6 +23,7 @@ import ButtonCustom from '../../components/Button'
 import {Block} from "galio-framework";
 import { useIsFocused } from '@react-navigation/native';
 import helpers from "../../store/helper";
+import { config } from '../../../config'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -39,7 +40,7 @@ const detailScreen = ({navigation, route}) => {
     }, [])
 
     const loadData = async () => {
-        await fetch('http://47.254.253.64:5000/api/post/' + idPost,
+        await fetch( config() + 'post/' + idPost,
             {
                 method: 'GET',
                 headers: {
@@ -66,7 +67,7 @@ const detailScreen = ({navigation, route}) => {
    }
 
    const addToFollowList = async () => {
-       await fetch('http://47.254.253.64:5000/api/post/follow/' + idPost,
+       await fetch( config() + 'post/follow/' + idPost,
            {
                method: 'POST',
                headers: {
@@ -95,7 +96,7 @@ const detailScreen = ({navigation, route}) => {
    }
 
     const deleteToFollowList = async () => {
-        await fetch('http://47.254.253.64:5000/api/post/follow/' + idPost,
+        await fetch( config() + 'post/follow/' + idPost,
             {
                 method: 'DELETE',
                 headers: {

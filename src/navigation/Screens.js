@@ -260,7 +260,6 @@ function MyPostStack(props) {
                         <Header
                             title="Thêm mới bài viết"
                             back
-                            transparent
                             navigation={navigation}
                             scene={scene}
                         />
@@ -277,7 +276,6 @@ function MyPostStack(props) {
                         <Header
                             title="Chỉnh sửa bài viết"
                             back
-                            transparent
                             navigation={navigation}
                             scene={scene}
                         />

@@ -14,6 +14,7 @@ const { width } = Dimensions.get("screen");
 import React, { useState, Component } from 'react';
 import {FontAwesome} from "@expo/vector-icons";
 import SelectDropdown from "react-native-select-dropdown";
+import { config } from '../../../config'
 
 class Home extends React.Component {
   state = {
@@ -44,7 +45,7 @@ class Home extends React.Component {
       this.setState({
           homeData: []
       }, function () {
-          fetch("http://47.254.253.64:5000/api/posts?page="
+          fetch( config() + "posts?page="
               + this.state.page + "&filter=address:"
               + (this.state.district ? "" + this.state.district : "")
               + (this.state.toilet ? ",toilet:" + this.state.toilet : "")
