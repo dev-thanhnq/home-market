@@ -109,12 +109,20 @@ const CreatePost = ({navigation}) => {
             await fetch( config() + "posts/user", requestOptions)
                 .then(response => response.json())
                 .then(result => {
-                    setLoading(false)
-                    navigation.navigate("MyPost")
-                    showMessage({
-                        message: "Thêm mới thành công",
-                        type: "success",
-                    });
+                    if (result.error === "user doesnt verify") {
+                        setLoading(false)
+                        showMessage({
+                            message: "Vui lòng cập nhật thông tin cá nhân để đăng bài",
+                            type: "error",
+                        });
+                    } else {
+                        setLoading(false)
+                        navigation.navigate("MyPost")
+                        showMessage({
+                            message: "Thêm mới thành công",
+                            type: "success",
+                        });
+                    }
                 })
                 .catch(error =>  {
                         console.log('error', error)
